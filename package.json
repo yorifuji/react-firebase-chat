@@ -13,7 +13,6 @@
     "firebase": "^7.17.2",
     "firebase-tools": "^8.7.0",
     "fs": "^0.0.1-security",
-    "jest": "^26.4.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

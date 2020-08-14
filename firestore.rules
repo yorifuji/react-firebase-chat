@@ -1,0 +1,65 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // channel
+    match /channels/{channel=**} {
+      allow read: if request.auth.uid != null;
+      allow delete: if request.auth.uid != null && existingData().owner == request.auth.uid;
+    }
+
+    match /channels/{channel} {
+      allow create: if request.auth.uid != null &&
+                    incomingData().owner == request.auth.uid &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt"]) &&
+                    ["owner", "name", "createdAt"].hasAll(incomingData().keys());
+      allow update: if request.auth.uid != null &&
+                    existingData().owner == request.auth.uid &&
+                    incomingData().owner == request.auth.uid &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt", "metadata", "updatedAt"]) &&
+                    ["owner", "name", "createdAt", "metadata", "updatedAt"].hasAll(incomingData().keys());
+
+      match /posts/{post} {
+        allow create: if request.auth.uid != null &&
+                      incomingData().owner == request.auth.uid &&
+                      incomingData().keys().hasAll(["owner", "from", "body", "createdAt", "metadata"]) &&
+                      ["owner", "from", "body", "createdAt", "metadata"].hasAll(incomingData().keys());
+        allow update: if request.auth.uid != null &&
+                      existingData().owner == request.auth.uid &&
+                      incomingData().owner == request.auth.uid &&
+                      incomingData().keys().hasAll(["owner", "name", "createdAt", "metadata", "updatedAt"]) &&
+                      ["owner", "name", "createdAt", "metadata", "updatedAt"].hasAll(incomingData().keys());
+      }
+    }
+
+    // user
+    match /users/{user} {
+      allow read : if request.auth.uid != null;
+      allow create: if request.auth.uid != null &&
+                    request.resource.id == request.auth.uid &&
+                    incomingData().owner == request.auth.uid &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt"]) &&
+                    ["owner", "name", "createdAt"].hasAll(incomingData().keys());
+      allow update: if request.auth.uid != null &&
+                    request.resource.id == request.auth.uid &&
+                    existingData().owner == request.auth.uid &&
+                    incomingData().owner == request.auth.uid &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt", "updatedAt"]) &&
+                    ["owner", "name", "createdAt", "updatedAt"].hasAll(incomingData().keys());
+      allow delete: if request.auth.uid != null &&
+                    request.resource.id == request.auth.uid &&
+                    existingData().owner == request.auth.uid;
+    }
+
+    // function
+    function existingData() {
+      return resource.data;
+    }
+
+    function incomingData() {
+      return request.resource.data;
+    }
+
+  }
+}

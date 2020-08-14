@@ -23,12 +23,15 @@ import Channel from './Channel';
 import Profile from './Profile';
 import AddChannel from './AddChannel'
 import AuthLoading from './AuthLoading'
+import InviteMeetng from './InviteMeeting'
+
 import useIsOnline from '../hooks/useIsOnline'
 import useChannelList from '../hooks/useChannelList'
 import useCurrentChannel from '../hooks/useCurrentChannel'
 
 import firebase, {db} from '../firebase'
 import useCurrentUser from '../hooks/useCurrentUser';
+
 
 const drawerWidth = 240;
 
@@ -78,6 +81,7 @@ function ResponsiveDrawer(props) {
   const history = useHistory()
   const [mobileOpen, setMobileOpen] = useState(false);
   const [oepnDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [openInviteDialog, setOpenInvitedialog] = useState(false)
 
   const isOnline = useIsOnline()
   const channelList = useChannelList()
@@ -90,8 +94,18 @@ function ResponsiveDrawer(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const handleVideoChat = () => {
-    sendJoinMeeting(currentChannel, user, "Let's Meeting")
+  const handleShowInviteMeeting = () => {
+    setOpenInvitedialog(true)
+  }
+
+  const handleInviteMeetingCancel = () => {
+    setOpenInvitedialog(false)
+  }
+
+  const handleInviteMeetingOK = (message) => {
+    console.log(message)
+    sendJoinMeeting(currentChannel, user, message)
+    setOpenInvitedialog(false)
   }
 
   const handleClickOpenDeleteDialog = () => {
@@ -240,7 +254,7 @@ function ResponsiveDrawer(props) {
                 <IconButton
                   aria-label="video chat"
                   color="inherit"
-                  onClick={handleVideoChat}
+                  onClick={handleShowInviteMeeting}
                 >
                   <VideocamIcon />
                 </IconButton>
@@ -323,6 +337,12 @@ function ResponsiveDrawer(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      {
+        openInviteDialog &&
+          <InviteMeetng
+            onCancel={() => handleInviteMeetingCancel()}
+            onOK={(message) => handleInviteMeetingOK(message)}/>
+      }
     </div>
   );
 }

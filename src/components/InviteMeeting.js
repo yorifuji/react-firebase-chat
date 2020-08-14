@@ -42,10 +42,10 @@ const InviteMeeting = (props) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="primary">
+          <Button onClick={handleCancel} variant="contained">
             Cancel
           </Button>
-          <Button onClick={handleOK} color="primary">
+          <Button onClick={handleOK} variant="contained" color="primary">
             Send
           </Button>
         </DialogActions>

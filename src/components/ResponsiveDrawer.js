@@ -329,7 +329,7 @@ function ResponsiveDrawer(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClickCanelDeleteDialog} variant="contained" color="primary" autoFocus>
+          <Button onClick={handleClickCanelDeleteDialog} variant="contained" autoFocus>
             Cancel
           </Button>
           <Button onClick={handleClickOkDeleteDialog} variant="contained" color="secondary">

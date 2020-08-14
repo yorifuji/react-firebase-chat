@@ -3,6 +3,18 @@ const fs = require('fs');
 
 const project_id = "react-firebase-1a904";
 
+
+describe("テストの正常実行の確認", () => {
+
+  test("pass test", async () => {
+    await firebase.assertSucceeds(Promise.resolve());
+  })
+
+  test("fail test", async () => {
+    await firebase.assertFails(Promise.reject());
+  })
+})
+
 describe("Firestoreのテスト", () => {
 
   //実行前に一度だけ実行（初期化）
@@ -42,18 +54,7 @@ describe("Firestoreのテスト", () => {
     }).firestore();
   }
 
-  describe("テストの正常実行の確認", () => {
-
-    test("pass test", async () => {
-      await firebase.assertSucceeds(Promise.resolve());
-    })
-
-    test("fail test", async () => {
-      await firebase.assertFails(Promise.reject());
-    })
-  })
-
-  describe("channelsの読み込み", () => {
+  describe("channelの読み込み", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }
@@ -70,7 +71,7 @@ describe("Firestoreのテスト", () => {
 
   })
 
-  describe("channelsの作成", () => {
+  describe("channelの作成", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }
@@ -95,7 +96,7 @@ describe("Firestoreのテスト", () => {
       )
     })
 
-    test("失敗（パラメータ過剰）", async () => {
+    test("失敗（スキーマエラー）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
       const channel = "ch0"
@@ -120,7 +121,7 @@ describe("Firestoreのテスト", () => {
       )
     })
 
-    test("失敗（owner == request.auth.uid）", async () => {
+    test("失敗（owner != request.auth.uid）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
       const channel = "ch0"
@@ -132,6 +133,82 @@ describe("Firestoreのテスト", () => {
       )
     })
   
+  })
+
+  describe("channelの更新", () => {
+
+    test("成功", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      // add
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      // update
+      await firebase.assertSucceeds(db.collection("channels").doc("channel0").update({
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+ 
+    test("失敗（スキーマエラー）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      // add
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      // update
+      await firebase.assertFails(db.collection("channels").doc("channel0").update({
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        foo: "bar"
+      }))
+    })
+
+    test("失敗（未認証）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      // add
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      // update
+      const db2 = authedApp(null);
+      await firebase.assertFails(db2.collection("channels").doc("channel0").update({
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+
+    test("失敗（owner != request.auth.uid）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      // add
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      // update
+      const user1 = { uid: 'bob' }
+      const db1 = authedApp(user1);
+      await firebase.assertFails(db1.collection("channels").doc("channel0").update({
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+
   })
 
   describe("channelの削除", () => {
@@ -176,7 +253,7 @@ describe("Firestoreのテスト", () => {
       await firebase.assertFails(db.collection("channels").doc("channel1").delete())
     })
 
-    test("失敗（owner == request.auth.uid)", async () => {
+    test("失敗（owner != request.auth.uid)", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
       const channel = "ch0"

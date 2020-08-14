@@ -12,13 +12,13 @@ service cloud.firestore {
     match /channels/{channel} {
       allow create: if request.auth.uid != null &&
                     incomingData().owner == request.auth.uid &&
-                    incomingData().keys().hasAll(["owner", "name", "createdAt"]) &&
-                    ["owner", "name", "createdAt"].hasAll(incomingData().keys());
+                    incomingData().keys().size() == 3 &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt"]);
       allow update: if request.auth.uid != null &&
                     existingData().owner == request.auth.uid &&
                     incomingData().owner == request.auth.uid &&
-                    incomingData().keys().hasAll(["owner", "name", "createdAt", "metadata", "updatedAt"]) &&
-                    ["owner", "name", "createdAt", "metadata", "updatedAt"].hasAll(incomingData().keys());
+                    incomingData().keys().size() == 4 &&
+                    incomingData().keys().hasAll(["owner", "name", "createdAt", "updatedAt"]);
 
       match /posts/{post} {
         allow create: if request.auth.uid != null &&

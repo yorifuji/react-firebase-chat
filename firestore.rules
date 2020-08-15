@@ -46,7 +46,8 @@ service cloud.firestore {
       allow update: if request.auth.uid != null &&
                     request.resource.id == request.auth.uid &&
                     incomingData().owner == request.auth.uid &&
-                    incomingData().keys().size == 4 &&
+                    incomingData().createdAt == existingData().createdAt &&
+                    incomingData().keys().size() == 4 &&
                     incomingData().keys().hasAll(["owner", "name", "createdAt", "updatedAt"]);
       allow delete: if request.auth.uid != null &&
                     request.resource.id == request.auth.uid;

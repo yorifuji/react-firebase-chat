@@ -249,7 +249,7 @@ describe("channelのテスト", () => {
       const result = db.collection("users").doc(user.uid).update({
         owner: user.uid,
         name: user.uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.Timestamp.fromDate(new Date("December 10, 1815")),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         }
       )

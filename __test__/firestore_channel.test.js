@@ -15,7 +15,7 @@ describe("テストの正常実行の確認", () => {
   })
 })
 
-describe("Firestoreのテスト", () => {
+describe("channelのテスト", () => {
 
   //実行前に一度だけ実行（初期化）
   beforeAll(
@@ -54,7 +54,7 @@ describe("Firestoreのテスト", () => {
     }).firestore();
   }
 
-  describe("channelの読み込み", () => {
+  describe("読み込み", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }
@@ -71,7 +71,7 @@ describe("Firestoreのテスト", () => {
 
   })
 
-  describe("channelの作成", () => {
+  describe("作成", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }
@@ -135,7 +135,7 @@ describe("Firestoreのテスト", () => {
   
   })
 
-  describe("channelの更新", () => {
+  describe("更新", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }
@@ -228,7 +228,7 @@ describe("Firestoreのテスト", () => {
     })
   })
 
-  describe("channelの削除", () => {
+  describe("削除", () => {
 
     test("成功", async () => {
       const user = { uid: 'alice' }

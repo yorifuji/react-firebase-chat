@@ -25,11 +25,13 @@ function useChannelList() {
   }
 
   useEffect(() => {
-    const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(snapshot => {
-      handleStatusChange(convertChannelList(snapshot))
-    })
-    return () => {
-      unsubscribe();
+    if (isOnline) {
+      const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(snapshot => {
+        handleStatusChange(convertChannelList(snapshot))
+      })
+      return () => {
+        unsubscribe();
+      }
     }
   }, [isOnline])
  

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import {db} from '../firebase'
+import useIsOnline from './useIsOnline';
 
 function useTimeline(channel) {
   const [timeline, setTimeline] = useState([]);
@@ -25,12 +26,14 @@ function useTimeline(channel) {
   }
 
   useEffect(() => {
-    const unsubscribe = db.collection("channels").doc(channel).collection("posts").orderBy("createdAt").onSnapshot(snapshot => {
-      handleStatusChange(convertSnapshot(snapshot))
-    })
-    return () => {
-      unsubscribe();
-    }
+    if (useIsOnline) {
+      const unsubscribe = db.collection("channels").doc(channel).collection("posts").orderBy("createdAt").onSnapshot(snapshot => {
+        handleStatusChange(convertSnapshot(snapshot))
+      })
+      return () => {
+        unsubscribe();
+      }
+     }
   }, [channel])
 
   return timeline

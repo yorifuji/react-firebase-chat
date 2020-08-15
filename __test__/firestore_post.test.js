@@ -85,6 +85,32 @@ describe("postのテスト", () => {
       await firebase.assertSucceeds(result)
     })
 
+    test("失敗（未認証）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(null);
+      const result = db.collection("channels").doc("channel0").collection("posts").add({
+        owner: user.uid,
+        from: "alice",
+        body: "message0",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        metadata: {}
+      })
+      await firebase.assertFails(result)
+    })
+
+    test("失敗（owner != request.auth.uid）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const result = db.collection("channels").doc("channel0").collection("posts").add({
+        owner: "bob",
+        from: "alice",
+        body: "message0",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        metadata: {}
+      })
+      await firebase.assertFails(result)
+    })
+
     test("失敗（パラメータ不足）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
@@ -111,31 +137,6 @@ describe("postのテスト", () => {
       await firebase.assertFails(result)
     })
 
-    test("失敗（未認証）", async () => {
-      const user = { uid: 'alice' }
-      const db = authedApp(null);
-      const result = db.collection("channels").doc("channel0").collection("posts").add({
-        owner: user.uid,
-        from: "alice",
-        body: "message0",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        metadata: {}
-      })
-      await firebase.assertFails(result)
-    })
-
-    test("失敗（owner != request.auth.uid）", async () => {
-      const user = { uid: 'alice' }
-      const db = authedApp(user);
-      const result = db.collection("channels").doc("channel0").collection("posts").add({
-        owner: "bob",
-        from: "alice",
-        body: "message0",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        metadata: {}
-      })
-      await firebase.assertFails(result)
-    })
   })
 
   describe("更新", () => {
@@ -179,6 +180,54 @@ describe("postのテスト", () => {
       }))
     })
 
+    test("失敗（owner != request.auth.uid）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      const user1 = { uid: 'bob' }
+      const db1 = authedApp(user1);
+      await firebase.assertFails(db1.collection("channels").doc("channel0").update({
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+
+    test("失敗（ownerの変更）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      const channel = "ch0"
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: channel,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      await firebase.assertFails(db.collection("channels").doc("channel0").update({
+        owner: "bob",
+        name: "ch1",
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+
+    test("失敗（createdAtの更新）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: "ch0",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      await firebase.assertFails(db.collection("channels").doc("channel0").update({
+        name: "ch1",
+        createdAt: firebase.firestore.Timestamp.fromDate(new Date("December 10, 1815")),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
+
     test("失敗（スキーマエラー）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
@@ -199,37 +248,24 @@ describe("postのテスト", () => {
       }))
     })
 
-    test("失敗（owner != request.auth.uid）", async () => {
+    test("失敗（パラメータ不足）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const channel = "ch0"
-      await db.collection("channels").doc("channel0").set({
+      const result = await db.collection("channels").doc("channel0").collection("posts").doc("post0").set(({
         owner: user.uid,
-        name: channel,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      const user1 = { uid: 'bob' }
-      const db1 = authedApp(user1);
-      await firebase.assertFails(db1.collection("channels").doc("channel0").update({
-        name: "ch1",
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        from: "alice",
+        body: "message0",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        metadata: {}
+      }))
+      await firebase.assertFails(db.collection("channels").doc("channel0").collection("posts").doc("post0").update({
+        owner: user.uid,
+        from: "alice",
+        body: "message1",
+        metadata: {},
       }))
     })
 
-    test("失敗（createdAtの更新）", async () => {
-      const user = { uid: 'alice' }
-      const db = authedApp(user);
-      await db.collection("channels").doc("channel0").set({
-        owner: user.uid,
-        name: "ch0",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      await firebase.assertFails(db.collection("channels").doc("channel0").update({
-        name: "ch1",
-        createdAt: firebase.firestore.Timestamp.fromDate(new Date("December 10, 1815")),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }))
-    })
   })
 
   describe("削除", () => {
@@ -260,20 +296,6 @@ describe("postのテスト", () => {
       }))
       const db2 = authedApp(null);
       const result = db2.collection("channels").doc("channel0").collection("posts").doc("post0").delete()
-      await firebase.assertFails(result)
-    })
-
-    test("失敗（channelIDエラー）", async () => {
-      const user = { uid: 'alice' }
-      const db = authedApp(user);
-      await db.collection("channels").doc("channel0").collection("posts").doc("post0").set(({
-        owner: user.uid,
-        from: "alice",
-        body: "message0",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        metadata: {}
-      }))
-      const result = db.collection("channels").doc("channel0").collection("posts").doc("post1").delete()
       await firebase.assertFails(result)
     })
 

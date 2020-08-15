@@ -144,14 +144,14 @@ describe("postのテスト", () => {
     test("成功", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const result = await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {}
       }))
-      await firebase.assertSucceeds(db.collection("channels").doc("post-channel").collection("posts").doc("post0").update({
+      await firebase.assertSucceeds(db.collection("channels").doc("post-channel").collection("posts").doc(doc.id).update({
         owner: user.uid,
         from: "alice",
         body: "message1",
@@ -163,7 +163,7 @@ describe("postのテスト", () => {
     test("失敗（未認証）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const result = await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
@@ -171,7 +171,7 @@ describe("postのテスト", () => {
         metadata: {}
       }))
       const db2 = authedApp(null);
-      await firebase.assertFails(db2.collection("channels").doc("post-channel").collection("posts").doc("post0").update({
+      await firebase.assertFails(db2.collection("channels").doc("post-channel").collection("posts").doc(doc.id).update({
         owner: user.uid,
         from: "alice",
         body: "message1",
@@ -231,14 +231,14 @@ describe("postのテスト", () => {
     test("失敗（スキーマエラー）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const result = await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {}
       }))
-      await firebase.assertFails(db.collection("channels").doc("post-channel").collection("posts").doc("post0").update({
+      await firebase.assertFails(db.collection("channels").doc("post-channel").collection("posts").doc(doc.id).update({
         owner: user.uid,
         from: "alice",
         body: "message1",
@@ -251,14 +251,14 @@ describe("postのテスト", () => {
     test("失敗（パラメータ不足）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const result = await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {}
       }))
-      await firebase.assertFails(db.collection("channels").doc("post-channel").collection("posts").doc("post0").update({
+      await firebase.assertFails(db.collection("channels").doc("post-channel").collection("posts").doc(doc.id).update({
         owner: user.uid,
         from: "alice",
         body: "message1",
@@ -273,21 +273,21 @@ describe("postのテスト", () => {
     test("成功", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {}
       }))
-      const result = db.collection("channels").doc("post-channel").collection("posts").doc("post0").delete()
+      const result = db.collection("channels").doc("post-channel").collection("posts").doc(doc.id).delete()
       await firebase.assertSucceeds(result)
     })
 
     test("失敗（未認証）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
@@ -295,14 +295,14 @@ describe("postのテスト", () => {
         metadata: {}
       }))
       const db2 = authedApp(null);
-      const result = db2.collection("channels").doc("post-channel").collection("posts").doc("post0").delete()
+      const result = db2.collection("channels").doc("post-channel").collection("posts").doc(doc.id).delete()
       await firebase.assertFails(result)
     })
 
     test("失敗（owner != request.auth.uid)", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      await db.collection("channels").doc("post-channel").collection("posts").doc("post0").set(({
+      const doc = await db.collection("channels").doc("post-channel").collection("posts").add(({
         owner: user.uid,
         from: "alice",
         body: "message0",
@@ -311,7 +311,7 @@ describe("postのテスト", () => {
       }))
       const user2 = { uid: 'bob' }
       const db2 = authedApp(user2);
-      const result = db2.collection("channels").doc("post-channel").collection("posts").doc("post0").delete()
+      const result = db2.collection("channels").doc("post-channel").collection("posts").doc(doc.id).delete()
       await firebase.assertFails(result)
     })
   })

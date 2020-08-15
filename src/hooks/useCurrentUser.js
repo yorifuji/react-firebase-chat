@@ -14,6 +14,12 @@ function useCurrentUser() {
     handleStatusChange(firebase.auth().currentUser)
   }, [isOnline])
 
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      handleStatusChange(user)
+    })
+  })
+
   return isOnline ? user : null
 }
 

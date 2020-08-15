@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "yorifuji-react-app3",
+    "site": "yorifuji-react-firebase-chat",
     "public": "build",
     "ignore": [
       "firebase.json",

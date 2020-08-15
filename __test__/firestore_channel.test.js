@@ -209,6 +209,23 @@ describe("Firestoreのテスト", () => {
       }))
     })
 
+    test("失敗（createdAtの更新）", async () => {
+      const user = { uid: 'alice' }
+      const db = authedApp(user);
+      // add
+      await db.collection("channels").doc("channel0").set({
+        owner: user.uid,
+        name: "ch0",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      // update
+      await firebase.assertFails(db.collection("channels").doc("channel0").update({
+        owner: user.uid,
+        name: "ch1",
+        createdAt: firebase.firestore.Timestamp.fromDate(new Date("December 10, 1815")),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }))
+    })
   })
 
   describe("channelの削除", () => {

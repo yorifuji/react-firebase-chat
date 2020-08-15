@@ -281,17 +281,6 @@ describe("channelのテスト", () => {
       await firebase.assertFails(db2.collection("channels").doc("channel0").delete())
     })
 
-    test("失敗（channelIDエラー）", async () => {
-      const user = { uid: 'alice' }
-      const db = authedApp(user);
-      const doc = await db.collection("channels").doc("channel0").set({
-        owner: user.uid,
-        name: "ch0",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      await firebase.assertFails(db.collection("channels").doc("channel1").delete())
-    })
-
   })
 
 })

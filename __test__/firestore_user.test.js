@@ -1,8 +1,7 @@
 const firebase = require('@firebase/testing');
 const fs = require('fs');
 
-const project_id = "react-firebase-1a904";
-
+const project_id = "react-firebase-chat-test-user";
 
 describe("テストの正常実行の確認", () => {
 

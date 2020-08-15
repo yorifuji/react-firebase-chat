@@ -24,13 +24,14 @@ service cloud.firestore {
       match /posts/{post} {
         allow create: if request.auth.uid != null &&
                       incomingData().owner == request.auth.uid &&
-                      incomingData().keys().hasAll(["owner", "from", "body", "createdAt", "metadata"]) &&
-                      ["owner", "from", "body", "createdAt", "metadata"].hasAll(incomingData().keys());
+                      incomingData().keys().size() == 5 &&
+                      incomingData().keys().hasAll(["owner", "from", "body", "createdAt", "metadata"]);
         allow update: if request.auth.uid != null &&
                       existingData().owner == request.auth.uid &&
                       incomingData().owner == request.auth.uid &&
-                      incomingData().keys().hasAll(["owner", "name", "createdAt", "metadata", "updatedAt"]) &&
-                      ["owner", "name", "createdAt", "metadata", "updatedAt"].hasAll(incomingData().keys());
+                      incomingData().createdAt == existingData().createdAt &&
+                      incomingData().keys().size() == 6 &&
+                      incomingData().keys().hasAll(["owner", "from", "body", "createdAt", "metadata", "updatedAt"]);
       }
     }
 

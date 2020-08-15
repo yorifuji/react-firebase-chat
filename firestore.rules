@@ -50,7 +50,7 @@ service cloud.firestore {
                     incomingData().keys().size() == 4 &&
                     incomingData().keys().hasAll(["owner", "name", "createdAt", "updatedAt"]);
       allow delete: if request.auth.uid != null &&
-                    request.resource.id == request.auth.uid;
+                    request.auth.uid == user;
     }
 
     // function

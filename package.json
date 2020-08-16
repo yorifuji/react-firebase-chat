@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "firebase-test-rules": "yarn firebase emulators:exec --only firestore \"jest\""
+    "firebase-test-rules": "yarn firebase emulators:exec --only firestore \"jest\"",
+    "firebase-deploy": "yarn firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"

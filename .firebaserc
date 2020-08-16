@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "yorifuji-react-firebase-chat"
+    "production": "yorifuji-react-firebase-chat",
+    "staging": "yorifuji-react-firebase-chat-s"
   },
   "targets": {
     "yorifuji-react-firebase-chat": {

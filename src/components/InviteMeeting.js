@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useState } from 'react';
+import { Box } from '@material-ui/core';
 
 const InviteMeeting = (props) => {
   const [inputValue, setInputValue] = useState("Let's start meeting.")
@@ -24,7 +25,7 @@ const InviteMeeting = (props) => {
   };
 
   return (
-    <div>
+    <Box>
       <Dialog open={true} onClose={handleCancel} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Send Meeting Invitation</DialogTitle>
         <DialogContent>
@@ -51,7 +52,7 @@ const InviteMeeting = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }
 

@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import firebase, {db} from '../firebase'
 import useCurrentUser from '../hooks/useCurrentUser';
 import Timeline from './Timeline'
-import { Button } from '@material-ui/core';
+import { Button, Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   textfield: {
@@ -58,7 +58,7 @@ const Channel = () => {
   }
 
   return (
-    <div>
+    <Box>
       <Timeline channel={channel}/>
       <TextField fullWidth 
         value={inputValue}
@@ -71,7 +71,7 @@ const Channel = () => {
         Send
         </Button>}}
          />
-    </div>
+    </Box>
   )
 }
 

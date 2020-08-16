@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 import firebase, {db} from '../firebase'
-import { Button, Snackbar } from '@material-ui/core';
+import { Button, Snackbar, Box } from '@material-ui/core';
 
 import MuiAlert from '@material-ui/lab/Alert';
 import useCurrentUser from '../hooks/useCurrentUser';
@@ -62,7 +62,7 @@ const AddChannel = () => {
 
 
   return (
-    <div>
+    <Box>
       <TextField
         fullWidth
         value={inputValue}
@@ -85,7 +85,7 @@ const AddChannel = () => {
           You have successfully created a channel.
         </Alert>
       </Snackbar>
-    </div>
+    </Box>
   )
 }
 

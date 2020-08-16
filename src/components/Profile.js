@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar } from '@material-ui/core';
+import { Grid, Avatar, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
 import firebase from '../firebase';
@@ -37,7 +37,7 @@ const Profile = () => {
     <Grid container alignItems="center" justify="center">
       {
         user ? (
-          <div>
+          <Box>
             {/* <p>
               Profile
               <Avatar alt={user.displayName}
@@ -62,7 +62,7 @@ const Profile = () => {
             <p>
               <button onClick={deleteAccount}>Unregist Account</button>
             </p>
-          </div>
+          </Box>
         ) : (
           <button onClick={login}>Google Login</button>
         )  

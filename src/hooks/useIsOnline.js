@@ -6,13 +6,14 @@ function useIsOnline() {
 
   function handleStatusChange(user) {
     setIsOnline(user ? true : false);
+    console.log(isOnline)
   }
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       handleStatusChange(user)
     })
-  }, [])
+  })
 
   return isOnline
 }

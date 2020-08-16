@@ -3,7 +3,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import useCurrentUser from '../hooks/useCurrentUser'
+import firebase from '../firebase'
+import useCurrentUser from '../hooks/useCurrentUser';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -15,11 +16,24 @@ const useStyles = makeStyles((theme) => ({
 const AuthLoading = () => {
   const classes = useStyles();
   const history = useHistory()
-  const user = useCurrentUser()
+  // const user = useCurrentUser()
+
+  // useEffect(() => {
+  //   if (user) history.push("/profile")
+  // }, [user])
 
   useEffect(() => {
-    if (user) history.push("/profile")
-  }, [user, history])
+    function handleStatusChange(user) {
+      if (user) history.push("/profile")
+    }
+
+    const unsbscribe = firebase.auth().onAuthStateChanged(user => {
+      handleStatusChange(user)
+    })
+    return () => {
+      unsbscribe()
+    }
+  })
 
   return (
     <Backdrop className={classes.backdrop} open={true}>

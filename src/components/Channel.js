@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { useParams } from 'react-router-dom'
 
 import firebase, {db} from '../firebase'
-import useTimeline from '../hooks/useTimeline'
 import useCurrentUser from '../hooks/useCurrentUser';
 import Timeline from './Timeline'
 import { Button } from '@material-ui/core';
@@ -16,18 +15,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Channel = () => {
-  let { id } = useParams();
-  // console.log(id)
+  let { channel } = useParams();
+  // console.log(channel)
 
-  const messagesEndRef = useRef(null)
   const [inputValue, setInputValue] = useState("")
   const classes = useStyles();
-  const timeline = useTimeline(id)
   const user = useCurrentUser()
   
   function handleKeyPress(e) {
     if(e.keyCode === 13){
-      sendMessage(id, user, inputValue)
+      sendMessage(channel, user, inputValue)
       setInputValue("")
     }
   }
@@ -38,7 +35,7 @@ const Channel = () => {
   }
 
   const handleSendMessage = (e) => {
-    sendMessage(id, user, inputValue)
+    sendMessage(channel, user, inputValue)
     setInputValue("")
 }
 
@@ -60,14 +57,9 @@ const Channel = () => {
     });
   }
 
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView()
-  }
-  useEffect(scrollToBottom, [timeline]);
-
   return (
     <div>
-      <Timeline timeline={timeline} />
+      <Timeline channel={channel}/>
       <TextField fullWidth 
         value={inputValue}
         label="Message"
@@ -79,7 +71,6 @@ const Channel = () => {
         Send
         </Button>}}
          />
-      <div ref={messagesEndRef} />
     </div>
   )
 }

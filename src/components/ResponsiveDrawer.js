@@ -313,8 +313,8 @@ function ResponsiveDrawer(props) {
         <Route exact path='/auth' component={AuthLoading} />
         <Route exact path='/profile' component={Profile} />
         <Route exact path='/addChannel' component={AddChannel} />
-        <Route path='/channel/:id' component={Channel} />
-        {/* <Route path='/user/:id' component={User} /> */}
+        <Route path='/channel/:channel' component={Channel} />
+        {/* <Route path='/user/:uid' component={User} /> */}
       </main>
       <Dialog
         open={oepnDeleteDialog}

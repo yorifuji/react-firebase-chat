@@ -13,9 +13,9 @@ function useCurrentChannel(location) {
     if (location.pathname.indexOf("/channel/") === 0) {
       handleStatusChange(location.pathname.slice("/channel/".length))
     }
-  }, [isOnline, location])
+  }, [location])
 
-  return channel
+  return isOnline ? channel : null
 }
 
 export default useCurrentChannel

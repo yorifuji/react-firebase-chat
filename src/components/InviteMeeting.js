@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useState } from 'react';
 
 const InviteMeeting = (props) => {
-  const [inputValue, setInputValue] = useState("")
+  const [inputValue, setInputValue] = useState("Let's start meeting.")
 
   function handleInputChange(e) {
     setInputValue(e.target.value)
@@ -32,9 +32,10 @@ const InviteMeeting = (props) => {
             Send a meeting invitation message to this channel.
           </DialogContentText>
           <TextField
-            // autoFocus
+            defaultValue={inputValue}
+            autoFocus
             margin="dense"
-            label="Let's start meeting."
+            label="Message"
             type="text"
             fullWidth
             value={inputValue}

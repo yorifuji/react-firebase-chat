@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Message from './Message';
 import {db} from '../firebase'
+import { Box } from '@material-ui/core';
 
 const Timeline = ({channel}) => {
   const messagesEndRef = useRef(null)
@@ -36,12 +37,12 @@ const Timeline = ({channel}) => {
   }, [timeline])
 
   return (
-    <box>
+    <Box>
       {
         timeline.map((message,index) => <Message message={message} key={index} />)
       }
       <div ref={messagesEndRef} />
-    </box>
+    </Box>
   )
 }
 

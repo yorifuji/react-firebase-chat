@@ -29,6 +29,13 @@ const AddChannel = () => {
     setInputValue(e.target.value)
   }
 
+  function handleKeyPress(e) {
+    if(e.keyCode === 13){
+      addChannel(e.target.value)
+      setInputValue("")
+    }
+  }
+
   const addChannel = (channel) => {
     if (channel.length === 0) return
     db.collection("channels").add({
@@ -62,6 +69,7 @@ const AddChannel = () => {
         label="Add Channel"
         variant="outlined"
         className={classes.textfield}
+        onKeyDown={handleKeyPress}
         onChange={handleInputChange}
         InputProps={{endAdornment: <Button variant="contained" color="primary" onClick={() => addChannel(inputValue)}>
         Add

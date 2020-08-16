@@ -1,5 +1,21 @@
 {
   "projects": {
-    "default": "react-firebase-1a904"
+    "default": "yorifuji-react-firebase-chat"
+  },
+  "targets": {
+    "yorifuji-react-firebase-chat": {
+      "hosting": {
+        "yorifuji-react-firebase-chat": [
+          "yorifuji-react-firebase-chat"
+        ]
+      }
+    },
+    "yorifuji-react-firebase-chat-s": {
+      "hosting": {
+        "yorifuji-react-firebase-chat-s": [
+          "yorifuji-react-firebase-chat-s"
+        ]
+      }
+    }
   }
 }

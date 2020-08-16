@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { orange } from '@material-ui/core/colors';
-import { CardActions, Button, Fade } from '@material-ui/core';
+import { CardActions, Button, Grow } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -30,7 +30,7 @@ const Message = (props) => {
   }
 
   return (
-    <Fade in={true}>
+    <Grow in={true}>
       <Card className={classes.card}>
         <CardHeader
           avatar={
@@ -57,7 +57,7 @@ const Message = (props) => {
           )
         }
       </Card>
-    </Fade>
+    </Grow>
   )
 }
 

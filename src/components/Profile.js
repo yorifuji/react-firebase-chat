@@ -19,12 +19,18 @@ const Profile = () => {
   const user = useCurrentUser()
   const history = useHistory()
 
-  const login = () => {
+  const signin_google = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
     history.push('/auth')
   };
-  
+
+  const signin_twitter = () => {
+    const provider = new firebase.auth.TwitterAuthProvider()
+    firebase.auth().signInWithRedirect(provider);
+    history.push('/auth')
+  };
+
   const logout = () => {
     firebase.auth().signOut();
   };
@@ -64,7 +70,14 @@ const Profile = () => {
             </p>
           </Box>
         ) : (
-          <button onClick={login}>Google Login</button>
+          <Box>
+            <p>
+              <button onClick={signin_google}>Signin via Google</button>
+            </p>
+            <p>
+              <button onClick={signin_twitter}>Signin via Twitter</button>
+            </p>
+          </Box>
         )  
       }
     </Grid>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Avatar, Box } from '@material-ui/core';
+import { Grid, Avatar, Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { orange } from '@material-ui/core/colors';
 import firebase from '../firebase';
@@ -63,19 +63,19 @@ const Profile = () => {
               uid: {user.uid}
             </p>
             <p>
-              <button onClick={logout}>Logout</button>
+              <Button variant="contained" color="primary" onClick={logout}>Logout</Button>
             </p>
             <p>
-              <button onClick={deleteAccount}>Unregist Account</button>
+              <Button variant="contained" color="secondary" onClick={deleteAccount}>Unregist Account</Button>
             </p>
           </Box>
         ) : (
           <Box>
             <p>
-              <button onClick={signin_google}>Signin via Google</button>
+              <Button variant="contained" color="primary" onClick={signin_google}>Signin via Google</Button>
             </p>
             <p>
-              <button onClick={signin_twitter}>Signin via Twitter</button>
+              <Button variant="contained" color="primary" onClick={signin_twitter}>Signin via Twitter</Button>
             </p>
           </Box>
         )  

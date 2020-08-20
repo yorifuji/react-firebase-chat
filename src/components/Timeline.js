@@ -11,12 +11,14 @@ const Timeline = ({channel}) => {
     const timeline = []
     snapshot.forEach(doc => {
       const data = doc.data()
+      console.log(data)
       timeline.push({
         owner: data.owner,
         from: data.from,
         body: data.body,
         createdAt: data["createdAt"] ? data.createdAt.seconds * 1000 : Date.now(),
-        metadata: data["metadata"] ? data.metadata : null
+        metadata: data["metadata"] ? data.metadata : null,
+        reactions: data["reactions"] ? data.reactions : null
       })
     })
     return timeline

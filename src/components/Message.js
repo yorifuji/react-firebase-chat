@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
@@ -30,14 +30,114 @@ const useStyles = makeStyles(() => ({
 const Message = (props) => {
   const message = props.message;
   const classes = useStyles();
+  const [reactions, setReactions] = useState([])
 
   const handleCardActionMeeting = (meeting) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
   }
 
-  const handleClickChip = () => {
+  const handleClickNewChip = () => {
 
   }
+
+  const handleClickRemoveChip = () => {
+
+  }
+
+  const reactions_on_message = [
+    {
+      uid: 'xxxxx',
+      emoji: 'grinning',
+    },
+    {
+      uid: 'xxxxx',
+      emoji: 'grinning',
+    },
+    {
+      uid: 'yyyy',
+      emoji: 'sunny',
+    },
+    {
+      uid: 'yyyy',
+      emoji: 'sunny',
+    }
+  ]
+
+  useEffect(() => {
+    // [
+    //   {
+    //     "emoji": "grinning",
+    //     "uids" : [reaction1, reaction2],
+    //   },
+    // ]
+    const summarize = []
+    if (message["reactions"]) {
+      message.reactions.forEach(reaction => {
+        const exists = summarize.find(s => s.emoji === reaction.emoji)
+        if (exists) {
+          exists.uids.push(reaction)
+        }
+        else {
+          summarize.push({
+            "emoji" : reaction.emoji,
+            "uids"  : [reaction]
+          })
+        }
+      })
+      setReactions(summarize)
+      console.log(summarize)
+    }
+  }, [message])
+
+  const metadataFooter = () => {
+    return (
+      message.metadata?.meeting && (
+        <CardActions>
+          <Button size="small" color="primary" onClick={() => {
+            handleCardActionMeeting(message.metadata.meeting)}}>
+            JOIN
+          </Button>
+        </CardActions>
+      )
+    )
+  }
+
+  const messageFooter = () => {
+    const reaction_chips = reactions.map((reaction,index) =>
+      <Chip classes={{labelSmall: classes.labelSmall}}
+        key={index}
+        icon={<Emoji emoji={reaction.emoji} set='apple' size={18} />}
+        size="small"
+        label={reaction.uids.length}
+        onClick={handleClickRemoveChip} />
+    )
+    return (
+      <CardActions>
+        {reaction_chips}
+        <Chip
+         icon={<EmojiEmotionsIcon />}
+         label="Add"
+         size="small"
+         onClick={handleClickNewChip} />
+      </CardActions>
+    )
+  }
+
+      // {/* <Chip classes={{labelSmall: classes.labelSmall}}
+      //   icon={<Emoji emoji='grinning' set='apple' size={18} />}
+      //   size="small"
+      //   label="1"
+      //   onClick={handleClickChip} />
+      // <Chip classes={{labelSmall: classes.labelSmall}}
+      //   icon={<Emoji emoji='+1' set='apple' size={18} />}
+      //   size="small"
+      //   label="10"
+      //   onClick={handleClickChip} />
+      // <Chip
+      //   icon={<EmojiEmotionsIcon />}
+      //   label="Add"
+      //   size="small"
+      //   onClick={handleClickChip} /> */}
 
   return (
     <Grow in={true}>
@@ -56,35 +156,8 @@ const Message = (props) => {
             {message.body}
           </Typography>
         </CardContent>
-        {
-          message.metadata?.meeting && (
-            <CardActions>
-              <Button size="small" color="primary" onClick={() => {
-                handleCardActionMeeting(message.metadata.meeting)}}>
-                JOIN
-              </Button>
-            </CardActions>
-          )
-        }
-        {
-          <CardActions>
-            <Chip classes={{labelSmall: classes.labelSmall}}
-              icon={<Emoji emoji='grinning' set='apple' size={18} />}
-              size="small"
-              label="1"
-              onClick={handleClickChip} />
-            <Chip classes={{labelSmall: classes.labelSmall}}
-              icon={<Emoji emoji='+1' set='apple' size={18} />}
-              size="small"
-              label="10"
-              onClick={handleClickChip} />
-            <Chip
-              icon={<EmojiEmotionsIcon />}
-              label="Add"
-              size="small"
-              onClick={handleClickChip} />
-          </CardActions>
-        }
+        { metadataFooter() }
+        { messageFooter() }
       </Card>
     </Grow>
   )

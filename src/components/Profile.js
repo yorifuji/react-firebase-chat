@@ -6,6 +6,9 @@ import firebase from '../firebase';
 import useCurrentUser from '../hooks/useCurrentUser'
 import { useHistory } from 'react-router-dom';
 
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+
 const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundColor: orange[500],

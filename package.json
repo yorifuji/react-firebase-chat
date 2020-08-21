@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test-rules": "yarn firebase emulators:exec --only firestore \"jest\"",
+    "test:rules": "yarn firebase emulators:exec --only firestore \"jest\"",
     "eject": "react-scripts eject",
     "deploy": "yarn firebase deploy"
   },

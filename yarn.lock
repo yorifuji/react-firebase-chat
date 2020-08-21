@@ -2078,6 +2078,13 @@
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
 
+"@types/firebase@^3.2.1":
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/@types/firebase/-/firebase-3.2.1.tgz#17c1c8fee7485ab09668d2461e34540bdf44b3b1"
+  integrity sha512-G8XgHMu2jHlElfc2xVNaYP50F0qrqeTCjgeG1v5b4SRwWG4XKC4fCuEdVZuZaMRmVygcnbRZBAo9O7RsDvmkGQ==
+  dependencies:
+    firebase "*"
+
 "@types/fs-extra@^8.0.1":
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.1.1.tgz#1e49f22d09aa46e19b51c0b013cb63d0d923a068"
@@ -6024,6 +6031,26 @@ firebase-tools@^8.7.0:
     winston "^3.0.0"
     ws "^7.2.3"
 
+firebase@*, firebase@^7.19.0:
+  version "7.19.0"
+  resolved "https://registry.yarnpkg.com/firebase/-/firebase-7.19.0.tgz#cfa64ebc56f3ef095df31d20f1de4dc5fa80f793"
+  integrity sha512-gS0nFagMfDLEucgcMD/tCfpLH+crnTurpyMsh6JEvith7GA8cRA4S3T3300xPL6dSZliI7EiGsCNBXBil6sAUw==
+  dependencies:
+    "@firebase/analytics" "0.4.2"
+    "@firebase/app" "0.6.10"
+    "@firebase/app-types" "0.6.1"
+    "@firebase/auth" "0.14.9"
+    "@firebase/database" "0.6.11"
+    "@firebase/firestore" "1.16.5"
+    "@firebase/functions" "0.4.50"
+    "@firebase/installations" "0.4.16"
+    "@firebase/messaging" "0.7.0"
+    "@firebase/performance" "0.4.0"
+    "@firebase/polyfill" "0.3.36"
+    "@firebase/remote-config" "0.1.27"
+    "@firebase/storage" "0.3.42"
+    "@firebase/util" "0.3.1"
+
 firebase@7.18.0:
   version "7.18.0"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-7.18.0.tgz#00e3967f5bc608f3e12c1a5f0192f559de87943e"
@@ -6039,26 +6066,6 @@ firebase@7.18.0:
     "@firebase/installations" "0.4.16"
     "@firebase/messaging" "0.7.0"
     "@firebase/performance" "0.3.11"
-    "@firebase/polyfill" "0.3.36"
-    "@firebase/remote-config" "0.1.27"
-    "@firebase/storage" "0.3.42"
-    "@firebase/util" "0.3.1"
-
-firebase@^7.17.2:
-  version "7.19.0"
-  resolved "https://registry.yarnpkg.com/firebase/-/firebase-7.19.0.tgz#cfa64ebc56f3ef095df31d20f1de4dc5fa80f793"
-  integrity sha512-gS0nFagMfDLEucgcMD/tCfpLH+crnTurpyMsh6JEvith7GA8cRA4S3T3300xPL6dSZliI7EiGsCNBXBil6sAUw==
-  dependencies:
-    "@firebase/analytics" "0.4.2"
-    "@firebase/app" "0.6.10"
-    "@firebase/app-types" "0.6.1"
-    "@firebase/auth" "0.14.9"
-    "@firebase/database" "0.6.11"
-    "@firebase/firestore" "1.16.5"
-    "@firebase/functions" "0.4.50"
-    "@firebase/installations" "0.4.16"
-    "@firebase/messaging" "0.7.0"
-    "@firebase/performance" "0.4.0"
     "@firebase/polyfill" "0.3.36"
     "@firebase/remote-config" "0.1.27"
     "@firebase/storage" "0.3.42"

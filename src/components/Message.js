@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { orange } from '@material-ui/core/colors';
-import { CardActions, Button, Grow, Chip } from '@material-ui/core';
+import { CardActions, Button, Grow, Chip, MenuItem, Menu } from '@material-ui/core';
 import { Emoji } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
@@ -14,6 +14,8 @@ import useCurrentUser from '../hooks/useCurrentUser';
 import firebase, {db} from '../firebase'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -35,6 +37,7 @@ const Message = (props) => {
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false)
   const [summarizedReaction, setSummarizedReaction] = useState([])
+  const [anchorEl, setAnchorEl] = useState(null);
   const user = useCurrentUser()
 
   const handleCardActionMeeting = (meeting) => {
@@ -83,6 +86,22 @@ const Message = (props) => {
     }
   }
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    db.collection("channels").doc(channel).collection("posts").doc(message.id).delete()
+    .then(function() {
+      console.log("Document successfully delete!");
+    })
+    .catch(function(error) {
+      console.error("Error delete document: ", error);
+    });
+
+    setAnchorEl(null);
+  };
+
   useEffect(() => {
     const summarize = []
     reactions.forEach(reaction => {
@@ -108,6 +127,21 @@ const Message = (props) => {
             <Avatar aria-label="recipe" className={classes.avatar}>
               {message.from.slice(0,1)}
             </Avatar>
+          }
+          action={
+            message.owner === user?.uid && (
+              <IconButton aria-label="menu" onClick={handleClick}>
+                <MoreVertIcon />
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  >
+                  <MenuItem onClick={handleClose}>Delete Message</MenuItem>
+                </Menu>
+              </IconButton>
+            )
           }
           title={message.from}
           subheader={message.createdAt ? (toLocaleString(new Date(message.createdAt))) : toLocaleString(Date.now())}

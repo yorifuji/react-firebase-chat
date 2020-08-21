@@ -29,8 +29,9 @@ const useStyles = makeStyles(() => ({
 
 const Message = (props) => {
   const message = props.message;
+  const reactions = props.reactions;
   const classes = useStyles();
-  const [reactions, setReactions] = useState([])
+  const [summarizedReaction, setSummarizedReaction] = useState([])
 
   const handleCardActionMeeting = (meeting) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
@@ -44,50 +45,26 @@ const Message = (props) => {
 
   }
 
-  const reactions_on_message = [
-    {
-      uid: 'xxxxx',
-      emoji: 'grinning',
-    },
-    {
-      uid: 'xxxxx',
-      emoji: 'grinning',
-    },
-    {
-      uid: 'yyyy',
-      emoji: 'sunny',
-    },
-    {
-      uid: 'yyyy',
-      emoji: 'sunny',
-    }
-  ]
-
   useEffect(() => {
-    // [
-    //   {
-    //     "emoji": "grinning",
-    //     "uids" : [reaction1, reaction2],
-    //   },
-    // ]
+    console.log("reactions")
+    console.log(reactions)
     const summarize = []
-    if (message["reactions"]) {
-      message.reactions.forEach(reaction => {
-        const exists = summarize.find(s => s.emoji === reaction.emoji)
-        if (exists) {
-          exists.uids.push(reaction)
-        }
-        else {
-          summarize.push({
-            "emoji" : reaction.emoji,
-            "uids"  : [reaction]
-          })
-        }
-      })
-      setReactions(summarize)
-      console.log(summarize)
-    }
-  }, [message])
+    reactions.forEach(reaction => {
+      const exists = summarize.find(s => s.emoji === reaction.emoji)
+      if (exists) {
+        exists.uids.push(reaction)
+      }
+      else {
+        summarize.push({
+          "emoji" : reaction.emoji,
+          "uids"  : [reaction]
+        })
+      }
+    })
+    setSummarizedReaction(summarize)
+    console.log("summarize")
+    console.log(summarize)
+  }, [reactions])
 
   const metadataFooter = () => {
     return (
@@ -103,7 +80,9 @@ const Message = (props) => {
   }
 
   const messageFooter = () => {
-    const reaction_chips = reactions.map((reaction,index) =>
+    console.log("messageFooter")
+    console.log(summarizedReaction)
+    const reaction_chips = summarizedReaction.map((reaction,index) =>
       <Chip classes={{labelSmall: classes.labelSmall}}
         key={index}
         icon={<Emoji emoji={reaction.emoji} set='apple' size={18} />}
@@ -115,29 +94,13 @@ const Message = (props) => {
       <CardActions>
         {reaction_chips}
         <Chip
-         icon={<EmojiEmotionsIcon />}
+        //  icon={<EmojiEmotionsIcon />}
          label="Add"
          size="small"
          onClick={handleClickNewChip} />
       </CardActions>
     )
   }
-
-      // {/* <Chip classes={{labelSmall: classes.labelSmall}}
-      //   icon={<Emoji emoji='grinning' set='apple' size={18} />}
-      //   size="small"
-      //   label="1"
-      //   onClick={handleClickChip} />
-      // <Chip classes={{labelSmall: classes.labelSmall}}
-      //   icon={<Emoji emoji='+1' set='apple' size={18} />}
-      //   size="small"
-      //   label="10"
-      //   onClick={handleClickChip} />
-      // <Chip
-      //   icon={<EmojiEmotionsIcon />}
-      //   label="Add"
-      //   size="small"
-      //   onClick={handleClickChip} /> */}
 
   return (
     <Grow in={true}>

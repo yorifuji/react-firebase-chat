@@ -6,6 +6,7 @@ import { Box } from '@material-ui/core';
 const Timeline = ({channel}) => {
   const messagesEndRef = useRef(null)
   const [timeline, setTimeline] = useState([]);
+  const [reactions, setReactions] = useState([])
 
   const convertSnapshot = (snapshot) => {
     const timeline = []
@@ -13,6 +14,7 @@ const Timeline = ({channel}) => {
       const data = doc.data()
       console.log(data)
       timeline.push({
+        id: doc.id,
         owner: data.owner,
         from: data.from,
         body: data.body,
@@ -21,6 +23,7 @@ const Timeline = ({channel}) => {
         reactions: data["reactions"] ? data.reactions : null
       })
     })
+    console.log(timeline)
     return timeline
   }
 
@@ -33,6 +36,30 @@ const Timeline = ({channel}) => {
     }
   }, [channel])
 
+  useEffect(() => {
+    // db.collectionGroup('reactions').get().then(snapshot => {
+    //   snapshot.forEach(function (doc) {
+    //     console.log(doc.id, ' => ', doc.data());
+    //   })
+    // })
+    const unsubscribe = db.collectionGroup('reactions').onSnapshot(snapshot => {
+      const reactions = []
+      snapshot.forEach(doc => {
+        console.log(doc.id, ' => ', doc.data());
+        reactions.push(doc.data())
+      })
+      setReactions(reactions)
+      console.log(reactions)
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [timeline])
+
+  const getReactions = (messageID) => {
+    return reactions.filter(reaction => reaction.post == messageID)
+  }
+
   // auto scroll
   useEffect(() => {
     messagesEndRef.current.scrollIntoView()
@@ -41,7 +68,7 @@ const Timeline = ({channel}) => {
   return (
     <Box>
       {
-        timeline.map((message,index) => <Message message={message} key={index} />)
+        timeline.map((message,index) => <Message key={index} message={message} reactions={getReactions(message.id)}/>)
       }
       <div ref={messagesEndRef} />
     </Box>

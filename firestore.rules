@@ -44,6 +44,10 @@ service cloud.firestore {
       allow delete: if request.auth.uid != null && existingData().owner == request.auth.uid;
     }
 
+    // subcollection: reactions
+		match /{path=**}/reactions/{reaction} {
+      allow read: if true
+    }
 
     // user
     match /users/{user} {

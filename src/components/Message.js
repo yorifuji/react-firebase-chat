@@ -7,10 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { orange } from '@material-ui/core/colors';
 import { CardActions, Button, Grow, Chip } from '@material-ui/core';
-import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import { Emoji } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
+import useCurrentUser from '../hooks/useCurrentUser';
+import firebase, {db} from '../firebase'
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -28,17 +29,41 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Message = (props) => {
+  const channel = props.channel
   const message = props.message;
   const reactions = props.reactions;
   const classes = useStyles();
   const [summarizedReaction, setSummarizedReaction] = useState([])
+  const user = useCurrentUser()
 
   const handleCardActionMeeting = (meeting) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
   }
 
   const handleClickNewChip = () => {
+    console.log(
+      {
+        uid: user.uid,
+        channel: channel,
+        post: message.id,
+        emoji: "grinning",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 
+      }
+    )
+    db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").add({
+      uid: user.uid,
+      channel: channel,
+      post: message.id,
+      emoji: "grinning",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
 
   const handleClickRemoveChip = () => {
@@ -95,7 +120,7 @@ const Message = (props) => {
         {reaction_chips}
         <Chip
         //  icon={<EmojiEmotionsIcon />}
-         label="Add"
+         label="+"
          size="small"
          onClick={handleClickNewChip} />
       </CardActions>

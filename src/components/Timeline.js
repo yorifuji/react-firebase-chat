@@ -68,7 +68,7 @@ const Timeline = ({channel}) => {
   return (
     <Box>
       {
-        timeline.map((message,index) => <Message key={index} message={message} reactions={getReactions(message.id)}/>)
+        timeline.map((message,index) => <Message key={index} channel={channel} message={message} reactions={getReactions(message.id)}/>)
       }
       <div ref={messagesEndRef} />
     </Box>

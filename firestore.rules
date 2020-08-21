@@ -44,12 +44,17 @@ service cloud.firestore {
       allow delete: if request.auth.uid != null && existingData().owner == request.auth.uid;
     }
 
-    // subcollection: reactions
+    // /channel/{channel}/posts/{post}/reactions/{reaction}
 		match /{path=**}/reactions/{reaction} {
-      allow read: if true
+      allow create: if request.auth.uid != null &&
+                    incomingData().uid == request.auth.uid &&
+                    incomingData().keys().size() == 5 &&
+                    incomingData().keys().hasAll(["uid", "channel", "post", "emoji", "createdAt"]);
+      allow read: if request.auth.uid != null;
+      allow delete: if request.auth.uid != null && existingData().uid == request.auth.uid;
     }
 
-    // user
+    // /users/{user}
     match /users/{user} {
       allow create: if request.auth.uid != null &&
                     request.resource.id == request.auth.uid &&

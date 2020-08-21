@@ -2,17 +2,11 @@ import { useState, useEffect } from 'react'
 import firebase from '../firebase'
 
 function useIsOnline() {
-  const [isOnline, setIsOnline] = useState(false);
-
-  function handleStatusChange(user) {
-    setIsOnline(user ? true : false);
-    console.log(isOnline)
-  }
+  const [isOnline, setIsOnline] = useState<boolean>(false);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      handleStatusChange(user)
-    })
+    const unsbscribe = firebase.auth().onAuthStateChanged(user => setIsOnline(user ? true : false))
+    return () => unsbscribe()
   })
 
   return isOnline

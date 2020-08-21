@@ -4,21 +4,26 @@ import useIsOnline from './useIsOnline';
 
 function useChannelList() {
   const isOnline = useIsOnline()
-  const [channelList, setChannelList] = useState([]);
+  const [channelList, setChannelList] = useState<object[]>([]);
 
   useEffect(() => {
-    function handleStatusChange(channelList) {
+    const convert = (snapshot: firebase.firestore.QuerySnapshot) => {
+      let channelList: object[] = []
+      snapshot.forEach((doc: firebase.firestore.DocumentData) => {
+        channelList.push({
+          id: doc.id,
+          owner: doc.data().owner,
+          name: doc.data().name,
+          createdAt: doc.data().createdAt * 1000
+        })
+      })
       setChannelList(channelList);
       console.log(channelList)
     }
 
     if (isOnline) {
-      const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(snapshot => {
-        handleStatusChange(convertChannelList(snapshot))
-      })
-      return () => {
-        unsubscribe();
-      }
+      const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(convert)
+      return () => unsubscribe()
     }
   }, [isOnline])
 
@@ -27,17 +32,3 @@ function useChannelList() {
 }
 
 export default useChannelList
-
-const convertChannelList = (snapshot) => {
-  let channelList = []
-  snapshot.forEach(doc => {
-    channelList.push({
-      id: doc.id,
-      owner: doc.data().owner,
-      name: doc.data().name,
-      createdAt: doc.data().createdAt * 1000
-    })
-  })
-  return channelList
-}
-

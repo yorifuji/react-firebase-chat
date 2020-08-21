@@ -181,7 +181,7 @@ const Message = (props) => {
             emoji='point_up'
             set='apple'
             theme='auto'
-            showSkinTones='false'
+            showSkinTones={false}
             style={{ position: 'absolute', zIndex: 1, bottom: '20px', right: '20px' }}
             onSelect={(emoji) => handleSelectEmoji(emoji)}/>
         }

@@ -23,7 +23,6 @@ const Timeline = ({channel}) => {
         reactions: data["reactions"] ? data.reactions : null
       })
     })
-    console.log(timeline)
     return timeline
   }
 
@@ -37,15 +36,9 @@ const Timeline = ({channel}) => {
   }, [channel])
 
   useEffect(() => {
-    // db.collectionGroup('reactions').get().then(snapshot => {
-    //   snapshot.forEach(function (doc) {
-    //     console.log(doc.id, ' => ', doc.data());
-    //   })
-    // })
     const unsubscribe = db.collectionGroup('reactions').onSnapshot(snapshot => {
       const reactions = []
       snapshot.forEach(doc => {
-        console.log(doc.id, ' => ', doc.data());
         reactions.push({id:doc.id, ...doc.data()})
       })
       reactions.sort((a,b) => {
@@ -53,7 +46,6 @@ const Timeline = ({channel}) => {
         else return -1
       })
       setReactions(reactions)
-      console.log(reactions)
     })
     return () => {
       unsubscribe()

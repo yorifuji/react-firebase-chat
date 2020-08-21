@@ -11,7 +11,7 @@ function useChannelList() {
       setChannelList(channelList);
       console.log(channelList)
     }
-  
+
     if (isOnline) {
       const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(snapshot => {
         handleStatusChange(convertChannelList(snapshot))
@@ -21,7 +21,7 @@ function useChannelList() {
       }
     }
   }, [isOnline])
- 
+
 
   return isOnline ? channelList : []
 }

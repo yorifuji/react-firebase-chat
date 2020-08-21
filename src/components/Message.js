@@ -31,14 +31,11 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Message = (props) => {
-  const channel = props.channel
-  const message = props.message;
-  const reactions = props.reactions;
+  const {channel, message, reactions} = props
   const classes = useStyles();
+  const [showPicker, setShowPicker] = useState(false)
   const [summarizedReaction, setSummarizedReaction] = useState([])
   const user = useCurrentUser()
-
-  const [showPicker, setShowPicker] = useState(false)
 
   const handleCardActionMeeting = (meeting) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
@@ -49,16 +46,6 @@ const Message = (props) => {
   }
 
   const firestore_add_reaction = (emoji) => {
-      console.log(
-      {
-        uid: user.uid,
-        channel: channel,
-        post: message.id,
-        emoji: emoji,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-
-      }
-    )
     db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").add({
       uid: user.uid,
       channel: channel,
@@ -81,7 +68,7 @@ const Message = (props) => {
 
   const handleClickReaction = (reactions) => {
     console.log(reactions)
-    const reactions_me = reactions.uids.filter(reaction => reaction.uid == user.uid)
+    const reactions_me = reactions.items.filter(reaction => reaction.uid == user.uid)
     console.log(reactions_me)
     if (reactions_me.length) {
       // remove
@@ -97,61 +84,21 @@ const Message = (props) => {
   }
 
   useEffect(() => {
-    console.log("reactions")
-    console.log(reactions)
     const summarize = []
     reactions.forEach(reaction => {
       const exists = summarize.find(s => s.emoji === reaction.emoji)
       if (exists) {
-        exists.uids.push(reaction)
+        exists.items.push(reaction)
       }
       else {
         summarize.push({
-          "emoji" : reaction.emoji,
-          "uids"  : [reaction]
+          emoji : reaction.emoji,
+          items : [reaction]
         })
       }
     })
     setSummarizedReaction(summarize)
-    console.log("summarize")
-    console.log(summarize)
   }, [reactions])
-
-  const metadataFooter = () => {
-    return (
-      message.metadata?.meeting && (
-        <CardActions>
-          <Button size="small" color="primary" onClick={() => {
-            handleCardActionMeeting(message.metadata.meeting)}}>
-            JOIN
-          </Button>
-        </CardActions>
-      )
-    )
-  }
-
-  const messageFooter = () => {
-    console.log("messageFooter")
-    console.log(summarizedReaction)
-    const reaction_chips = summarizedReaction.map((reaction,index) =>
-      <Chip classes={{labelSmall: classes.labelSmall}}
-        key={index}
-        icon={<Emoji emoji={reaction.emoji} set='apple' size={18} />}
-        size="small"
-        label={reaction.uids.length}
-        onClick={() => handleClickReaction(reaction)} />
-    )
-    return (
-      <CardActions>
-        {reaction_chips}
-        <Chip
-        //  icon={<EmojiEmotionsIcon />}
-         label="+"
-         size="small"
-         onClick={handleClickNewChip} />
-      </CardActions>
-    )
-  }
 
   return (
     <Grow in={true}>
@@ -170,12 +117,34 @@ const Message = (props) => {
             {message.body}
           </Typography>
         </CardContent>
-        { metadataFooter() }
-        { messageFooter() }
         {
-          showPicker &&
-
-          <Picker
+          message.metadata?.meeting && (
+            <CardActions>
+              <Button size="small" color="primary" onClick={() => {
+                handleCardActionMeeting(message.metadata.meeting)}}>
+                JOIN
+              </Button>
+            </CardActions>
+          )
+        }
+        <CardActions>
+          {
+            summarizedReaction.map((reaction,index) =>
+              <Chip classes={{labelSmall: classes.labelSmall}}
+                key={index}
+                icon={<Emoji emoji={reaction.emoji} set='apple' size={18} />}
+                size="small"
+                label={reaction.items.length}
+                onClick={() => handleClickReaction(reaction)} />
+            )
+          }
+          <Chip
+            label="+"
+            size="small"
+            onClick={handleClickNewChip} />
+        </CardActions>
+        {
+          showPicker && <Picker
             autoFocus
             title='Pick your emoji...'
             emoji='point_up'

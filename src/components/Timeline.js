@@ -46,7 +46,11 @@ const Timeline = ({channel}) => {
       const reactions = []
       snapshot.forEach(doc => {
         console.log(doc.id, ' => ', doc.data());
-        reactions.push(doc.data())
+        reactions.push({id:doc.id, ...doc.data()})
+      })
+      reactions.sort((a,b) => {
+        if (a.emoji > b.emoji) return 1
+        else return -1
       })
       setReactions(reactions)
       console.log(reactions)

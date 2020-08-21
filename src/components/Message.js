@@ -12,6 +12,8 @@ import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
 import useCurrentUser from '../hooks/useCurrentUser';
 import firebase, {db} from '../firebase'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -36,17 +38,23 @@ const Message = (props) => {
   const [summarizedReaction, setSummarizedReaction] = useState([])
   const user = useCurrentUser()
 
+  const [showPicker, setShowPicker] = useState(false)
+
   const handleCardActionMeeting = (meeting) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
   }
 
   const handleClickNewChip = () => {
-    console.log(
+    setShowPicker(!showPicker)
+  }
+
+  const firestore_add_reaction = (emoji) => {
+      console.log(
       {
         uid: user.uid,
         channel: channel,
         post: message.id,
-        emoji: "grinning",
+        emoji: emoji,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
 
       }
@@ -55,7 +63,7 @@ const Message = (props) => {
       uid: user.uid,
       channel: channel,
       post: message.id,
-      emoji: "grinning",
+      emoji: emoji,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     })
     .then(function() {
@@ -66,8 +74,26 @@ const Message = (props) => {
     });
   }
 
-  const handleClickRemoveChip = () => {
+  const handleSelectEmoji = (emoji) => {
+    firestore_add_reaction(emoji.id)
+    setShowPicker(false)
+  }
 
+  const handleClickReaction = (reactions) => {
+    console.log(reactions)
+    const reactions_me = reactions.uids.filter(reaction => reaction.uid == user.uid)
+    console.log(reactions_me)
+    if (reactions_me.length) {
+      // remove
+      reactions_me.forEach(async (reaction) => {
+        const result = await db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").doc(reaction.id).delete()
+        console.log(result)
+      })
+    }
+    else {
+      // add
+      firestore_add_reaction(reactions.emoji)
+    }
   }
 
   useEffect(() => {
@@ -113,7 +139,7 @@ const Message = (props) => {
         icon={<Emoji emoji={reaction.emoji} set='apple' size={18} />}
         size="small"
         label={reaction.uids.length}
-        onClick={handleClickRemoveChip} />
+        onClick={() => handleClickReaction(reaction)} />
     )
     return (
       <CardActions>
@@ -146,6 +172,19 @@ const Message = (props) => {
         </CardContent>
         { metadataFooter() }
         { messageFooter() }
+        {
+          showPicker &&
+
+          <Picker
+            autoFocus
+            title='Pick your emoji...'
+            emoji='point_up'
+            set='apple'
+            theme='auto'
+            showSkinTones='false'
+            style={{ position: 'absolute', zIndex: 1, bottom: '20px', right: '20px' }}
+            onSelect={(emoji) => handleSelectEmoji(emoji)}/>
+        }
       </Card>
     </Grow>
   )

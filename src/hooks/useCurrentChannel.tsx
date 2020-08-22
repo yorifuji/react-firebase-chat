@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import useIsOnline from './useIsOnline';
 
-function useCurrentChannel(location) {
+function useCurrentChannel(location: Location) {
   const isOnline = useIsOnline()
-  const [channel, setChannel] = useState(null);
+  const [channel, setChannel] = useState<string | null>(null);
 
-  function handleStatusChange(user) {
-    setChannel(user)
+  function handleStatusChange(channel: string) {
+    setChannel(channel)
   }
 
   useEffect(() => {

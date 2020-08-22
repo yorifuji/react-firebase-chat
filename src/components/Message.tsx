@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { orange } from '@material-ui/core/colors';
-import { CardActions, Button, Grow, Chip, MenuItem, Menu } from '@material-ui/core';
+import { CardActions, Button, Grow, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box } from '@material-ui/core';
 import { Emoji } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
@@ -15,7 +15,7 @@ import firebase, {db} from '../firebase'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import IconButton from '@material-ui/core/IconButton';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -32,15 +32,21 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Message = (props) => {
+type Props = {
+  channel: string
+  message: any
+  reactions: any[]
+};
+
+const Message = (props: Props) => {
   const {channel, message, reactions} = props
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false)
-  const [summarizedReaction, setSummarizedReaction] = useState([])
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [summarizedReaction, setSummarizedReaction] = useState<any[]>([])
   const user = useCurrentUser()
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
-  const handleCardActionMeeting = (meeting) => {
+  const handleCardActionMeeting = (meeting: any) => {
     window.open(meeting.url, "_blank", "noopener,noreferrer")
   }
 
@@ -48,9 +54,9 @@ const Message = (props) => {
     setShowPicker(!showPicker)
   }
 
-  const firestore_add_reaction = (emoji) => {
+  const firestore_add_reaction = (emoji: any) => {
     db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").add({
-      uid: user.uid,
+      uid: user?.uid,
       channel: channel,
       post: message.id,
       emoji: emoji,
@@ -64,18 +70,18 @@ const Message = (props) => {
     });
   }
 
-  const handleSelectEmoji = (emoji) => {
+  const handleSelectEmoji = (emoji: any) => {
     firestore_add_reaction(emoji.id)
     setShowPicker(false)
   }
 
-  const handleClickReaction = (reactions) => {
+  const handleClickReaction = (reactions: any) => {
     console.log(reactions)
-    const reactions_me = reactions.items.filter(reaction => reaction.uid == user.uid)
+    const reactions_me = reactions.items.filter((reaction: any) => reaction.uid == user?.uid)
     console.log(reactions_me)
     if (reactions_me.length) {
       // remove
-      reactions_me.forEach(async (reaction) => {
+      reactions_me.forEach(async (reaction: any) => {
         const result = await db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").doc(reaction.id).delete()
         console.log(result)
       })
@@ -86,11 +92,15 @@ const Message = (props) => {
     }
   }
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const handleClickDelete = () => {
+    setOpenDeleteDialog(true)
+  }
 
-  const handleClose = () => {
+  const handleClickCanelDeleteDialog = () => {
+    setOpenDeleteDialog(false)
+  }
+
+  const handleClickOkDeleteDialog = () => {
     db.collection("channels").doc(channel).collection("posts").doc(message.id).delete()
     .then(function() {
       console.log("Document successfully delete!");
@@ -99,11 +109,11 @@ const Message = (props) => {
       console.error("Error delete document: ", error);
     });
 
-    setAnchorEl(null);
+    setOpenDeleteDialog(false)
   };
 
   useEffect(() => {
-    const summarize = []
+    const summarize: any[] = []
     reactions.forEach(reaction => {
       const exists = summarize.find(s => s.emoji === reaction.emoji)
       if (exists) {
@@ -119,7 +129,17 @@ const Message = (props) => {
     setSummarizedReaction(summarize)
   }, [reactions])
 
+  const toLocaleString = (date: Date) => {
+    return [
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate()
+        ].join( '/' ) + ' '
+        + date.toLocaleTimeString();
+  }
+
   return (
+    <Box>
     <Grow in={true}>
       <Card className={classes.card}>
         <CardHeader
@@ -130,21 +150,13 @@ const Message = (props) => {
           }
           action={
             message.owner === user?.uid && (
-              <IconButton aria-label="menu" onClick={handleClick}>
-                <MoreVertIcon />
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  >
-                  <MenuItem onClick={handleClose}>Delete Message</MenuItem>
-                </Menu>
+              <IconButton aria-label="menu" onClick={handleClickDelete}>
+                <DeleteIcon />
               </IconButton>
             )
           }
           title={message.from}
-          subheader={message.createdAt ? (toLocaleString(new Date(message.createdAt))) : toLocaleString(Date.now())}
+          subheader={toLocaleString(message.createdAt ? new Date(message.createdAt) : new Date())}
         />
         <CardContent className={classes.cardcontent}>
           <Typography variant="body1" component="p">
@@ -190,17 +202,29 @@ const Message = (props) => {
         }
       </Card>
     </Grow>
+    <Dialog
+        open={openDeleteDialog}
+        // onClose={handleClickCanelDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle id="alert-dialog-title">Delete Channel</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this channel?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClickCanelDeleteDialog} variant="contained" autoFocus>
+            Cancel
+          </Button>
+          <Button onClick={handleClickOkDeleteDialog} variant="contained" color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   )
 }
 
 export default Message;
-
-function toLocaleString( date ) {
-  return [
-      date.getFullYear(),
-      date.getMonth() + 1,
-      date.getDate()
-      ].join( '/' ) + ' '
-      + date.toLocaleTimeString();
-}
-

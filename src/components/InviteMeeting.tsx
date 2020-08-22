@@ -9,10 +9,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { useState } from 'react';
 import { Box } from '@material-ui/core';
 
-const InviteMeeting = (props) => {
+interface Props {
+  onOK: Function,
+  onCancel: Function
+}
+
+const InviteMeeting = (props: Props) => {
   const [inputValue, setInputValue] = useState("Let's start meeting.")
 
-  function handleInputChange(e) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setInputValue(e.target.value)
   }
 

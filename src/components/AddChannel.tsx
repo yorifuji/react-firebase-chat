@@ -3,12 +3,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 import firebase, {db} from '../firebase'
-import { Button, Snackbar, Box } from '@material-ui/core';
+import { Button, Snackbar, Box, SnackbarCloseReason } from '@material-ui/core';
 
 import MuiAlert from '@material-ui/lab/Alert';
 import useCurrentUser from '../hooks/useCurrentUser';
 
-function Alert(props) {
+function Alert(props: any) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
@@ -24,22 +24,22 @@ const AddChannel = () => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const user = useCurrentUser()
-  
-  function handleInputChange(e) {
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setInputValue(e.target.value)
   }
 
-  function handleKeyPress(e) {
+  function handleKeyPress(e: React.KeyboardEvent) {
     if(e.keyCode === 13){
-      addChannel(e.target.value)
+      addChannel(inputValue)
       setInputValue("")
     }
   }
 
-  const addChannel = (channel) => {
+  const addChannel = (channel: string) => {
     if (channel.length === 0) return
     db.collection("channels").add({
-      owner: user.uid,
+      owner: user?.uid,
       name: channel,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     })
@@ -53,7 +53,7 @@ const AddChannel = () => {
     });
   }
 
-  const handleClose = (event, reason) => {
+  const handleClose = (event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -81,7 +81,7 @@ const AddChannel = () => {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
-        <Alert onClose={handleClose} severity="success">
+        <Alert severity="success">
           You have successfully created a channel.
         </Alert>
       </Snackbar>

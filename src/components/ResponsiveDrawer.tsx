@@ -74,7 +74,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ResponsiveDrawer(props) {
+interface Props {
+  window: any
+}
+
+function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -85,7 +89,7 @@ function ResponsiveDrawer(props) {
 
   const isOnline = useIsOnline()
   const channelList = useChannelList()
-  const location = useLocation()
+  const location: any = useLocation()
   const currentChannel = useCurrentChannel(location)
   const user = useCurrentUser()
   // console.log(user)
@@ -102,10 +106,12 @@ function ResponsiveDrawer(props) {
     setOpenInvitedialog(false)
   }
 
-  const handleInviteMeetingOK = (message) => {
+  const handleInviteMeetingOK = (message: string) => {
     console.log(message)
-    sendJoinMeeting(currentChannel, user, message)
-    setOpenInvitedialog(false)
+    if (currentChannel && user && message) {
+      sendJoinMeeting(currentChannel, user, message)
+      setOpenInvitedialog(false)
+    }
   }
 
   const handleClickOpenDeleteDialog = () => {
@@ -114,13 +120,15 @@ function ResponsiveDrawer(props) {
 
   const handleClickOkDeleteDialog = () => {
     setOpenDeleteDialog(false);
-    deleteChannel(currentChannel)
+    if (currentChannel) {
+      deleteChannel(currentChannel)
+    }
   };
 
   const handleClickCanelDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };
-  
+
   const isLocationChannel = () => {
     if (location.pathname.indexOf("/channel/") === 0) {
       return location.pathname.substring("/channel/".length).length > 0 ? true : false
@@ -134,18 +142,18 @@ function ResponsiveDrawer(props) {
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter(channel => channel.id === channelID && channel.owner === user.uid)
+      const channel = channelList.filter((channel: any) => channel.id === channelID && channel.owner === user?.uid)
       // console.log(channel)
       if (channel.length > 0) return true
     }
     return false
   }
 
-  const isCurrentPath = (channel) => {
+  const isCurrentPath = (channel: string) => {
     return location.pathname === channel
   }
 
-  const sendJoinMeeting = (channel, user, message) => {
+  const sendJoinMeeting = (channel: string, user: firebase.User, message: string) => {
     // Add a new document in collection "cities"
     db.collection("channels").doc(channel).collection("posts").add({
       owner: user.uid,
@@ -166,7 +174,7 @@ function ResponsiveDrawer(props) {
     });
   }
 
-  const deleteChannel = (id) => {
+  const deleteChannel = (id: string) => {
     db.collection("channels").doc(id).delete().then(function() {
       console.log("Document successfully deleted!");
       history.push("/profile")
@@ -177,7 +185,7 @@ function ResponsiveDrawer(props) {
 
   const getChannelTitle = () => {
     let title = "Channel"
-    channelList.forEach(channel => {
+    channelList.forEach((channel: any) => {
       if (channel.id === currentChannel) title = `#${channel.name}`
     })
     return title
@@ -186,7 +194,7 @@ function ResponsiveDrawer(props) {
   // const users = ["yorifuji", "foo", "bar"]
 
   const drawer = (
-    <div>  
+    <div>
       {/* <div className={classes.toolbar} />
       <Divider /> */}
       <List>
@@ -207,7 +215,7 @@ function ResponsiveDrawer(props) {
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-        {channelList.map((channel) => (
+        {channelList.map((channel: any) => (
           <ListItem button key={channel.id} className={classes.nested} component={Link} to={"/channel/" + channel.id}
           selected={isCurrentPath("/channel/" + channel.id)} >
             <ListItemText primary={"# " + channel.name} />
@@ -242,10 +250,10 @@ function ResponsiveDrawer(props) {
           </IconButton>
           <Typography variant="h6" noWrap className={classes.title}>
             {
-              location.pathname === "/profile" ? "Profile" : 
-              location.pathname === "/auth" ? "Loading" : 
-              location.pathname === "/addChannel" ? "Add Channel" : 
-              location.pathname.indexOf("/channel") === 0 ? getChannelTitle() : "Workspace" 
+              location.pathname === "/profile" ? "Profile" :
+              location.pathname === "/auth" ? "Loading" :
+              location.pathname === "/addChannel" ? "Add Channel" :
+              location.pathname.indexOf("/channel") === 0 ? getChannelTitle() : "Workspace"
             }
           </Typography>
           {
@@ -341,7 +349,7 @@ function ResponsiveDrawer(props) {
         openInviteDialog &&
           <InviteMeetng
             onCancel={() => handleInviteMeetingCancel()}
-            onOK={(message) => handleInviteMeetingOK(message)}/>
+            onOK={(message: string) => handleInviteMeetingOK(message)}/>
       }
     </div>
   );

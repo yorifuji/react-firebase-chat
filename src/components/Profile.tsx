@@ -1,24 +1,20 @@
 import React from 'react';
-import { Grid, Avatar, Box, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { orange } from '@material-ui/core/colors';
+import { Grid, Box, Button } from '@material-ui/core';
 import firebase from '../firebase';
 import useCurrentUser from '../hooks/useCurrentUser'
 import { useHistory } from 'react-router-dom';
 
-import 'emoji-mart/css/emoji-mart.css'
-import { Picker } from 'emoji-mart'
-
-const useStyles = makeStyles((theme) => ({
-  avatar: {
-    backgroundColor: orange[500],
-    width: theme.spacing(10),
-    height: theme.spacing(10),
-  }
-}));
+// import { makeStyles } from '@material-ui/core/styles';
+// import { orange } from '@material-ui/core/colors';
+// const useStyles = makeStyles((theme) => ({
+//   avatar: {
+//     backgroundColor: orange[500],
+//     width: theme.spacing(10),
+//     height: theme.spacing(10),
+//   }
+// }));
 
 const Profile = () => {
-  const classes = useStyles()
   const user = useCurrentUser()
   const history = useHistory()
 
@@ -37,9 +33,9 @@ const Profile = () => {
   const logout = () => {
     firebase.auth().signOut();
   };
-  
+
   const deleteAccount = () => {
-    firebase.auth().currentUser.delete().then().catch(console.log);
+    firebase.auth().currentUser?.delete().then().catch(console.log);
   }
 
   return (
@@ -81,7 +77,7 @@ const Profile = () => {
               <Button variant="contained" color="primary" onClick={signin_twitter}>Signin via Twitter</Button>
             </p>
           </Box>
-        )  
+        )
       }
     </Grid>
   )

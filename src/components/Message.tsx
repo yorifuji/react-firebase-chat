@@ -208,10 +208,10 @@ const Message = (props: Props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         >
-        <DialogTitle id="alert-dialog-title">Delete Channel</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Delete Message</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this channel?
+            Are you sure you want to delete this message?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

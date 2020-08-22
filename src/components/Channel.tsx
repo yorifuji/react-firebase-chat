@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { useParams } from 'react-router-dom'
+import { useParams, RouteComponentProps } from 'react-router-dom'
 
 import firebase, {db} from '../firebase'
 import useCurrentUser from '../hooks/useCurrentUser';
@@ -14,32 +14,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+interface ParamTypes {
+  channel: string
+}
+
 const Channel = () => {
-  let { channel } = useParams();
+  const { channel } = useParams<ParamTypes>()
   // console.log(channel)
 
   const [inputValue, setInputValue] = useState("")
   const classes = useStyles();
   const user = useCurrentUser()
-  
-  function handleKeyPress(e) {
+
+  function handleKeyPress(e: React.KeyboardEvent) {
     if(e.keyCode === 13){
       sendMessage(channel, user, inputValue)
       setInputValue("")
     }
   }
 
-  function handleInputChange(e) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     // console.log(e)
     setInputValue(e.target.value)
   }
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     sendMessage(channel, user, inputValue)
     setInputValue("")
 }
 
-  const sendMessage = (channel, user, message) => {
+  const sendMessage = (channel: string, user: any, message: string) => {
     if (message.length === 0) return
     // Add a new document in collection "cities"
     db.collection("channels").doc(channel).collection("posts").add({
@@ -60,14 +64,14 @@ const Channel = () => {
   return (
     <Box>
       <Timeline channel={channel}/>
-      <TextField fullWidth 
+      <TextField fullWidth
         value={inputValue}
         label="Message"
         variant="outlined"
         className={classes.textfield}
         onKeyDown={handleKeyPress}
-        onChange={handleInputChange}
-        InputProps={{endAdornment: <Button variant="contained" color="primary" onClick={() => handleSendMessage()}>
+        onChange={(e) => handleInputChange(e)}
+        InputProps={{endAdornment: <Button variant="contained" color="primary" onClick={(e) => handleSendMessage(e)}>
         Send
         </Button>}}
          />

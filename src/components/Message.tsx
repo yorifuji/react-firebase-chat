@@ -43,7 +43,7 @@ const Message = (props: Props) => {
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false)
   const [summarizedReaction, setSummarizedReaction] = useState<any[]>([])
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState<Element | null>(null);
   const user = useCurrentUser()
 
   const handleCardActionMeeting = (meeting: any) => {

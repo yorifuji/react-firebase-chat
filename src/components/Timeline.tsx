@@ -3,13 +3,18 @@ import Message from './Message';
 import {db} from '../firebase'
 import { Box } from '@material-ui/core';
 
-const Timeline = ({channel}) => {
-  const messagesEndRef = useRef(null)
-  const [timeline, setTimeline] = useState([]);
-  const [reactions, setReactions] = useState([])
+interface Props {
+  channel: string
+}
 
-  const convertSnapshot = (snapshot) => {
-    const timeline = []
+const Timeline = (props: Props) => {
+  const channel = props.channel
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const [timeline, setTimeline] = useState<any[]>([]);
+  const [reactions, setReactions] = useState<any[]>([])
+
+  const convertSnapshot = (snapshot: firebase.firestore.QuerySnapshot) => {
+    const timeline: any[] = []
     snapshot.forEach(doc => {
       const data = doc.data()
       console.log(data)
@@ -23,21 +28,17 @@ const Timeline = ({channel}) => {
         reactions: data["reactions"] ? data.reactions : null
       })
     })
-    return timeline
+    setTimeline(timeline)
   }
 
   useEffect(() => {
-    const unsubscribe = db.collection("channels").doc(channel).collection("posts").orderBy("createdAt").onSnapshot(snapshot => {
-      setTimeline(convertSnapshot(snapshot))
-    })
-    return () => {
-      unsubscribe();
-    }
+    const unsubscribe = db.collection("channels").doc(channel).collection("posts").orderBy("createdAt").onSnapshot(convertSnapshot)
+    return () => unsubscribe()
   }, [channel])
 
   useEffect(() => {
     const unsubscribe = db.collectionGroup('reactions').onSnapshot(snapshot => {
-      const reactions = []
+      const reactions: any[] = []
       snapshot.forEach(doc => {
         reactions.push({id:doc.id, ...doc.data()})
       })
@@ -52,13 +53,13 @@ const Timeline = ({channel}) => {
     }
   }, [timeline])
 
-  const getReactions = (messageID) => {
+  const getReactions = (messageID: string) => {
     return reactions.filter(reaction => reaction.post == messageID)
   }
 
   // auto scroll
   useEffect(() => {
-    messagesEndRef.current.scrollIntoView()
+    messagesEndRef.current?.scrollIntoView()
   }, [timeline])
 
   return (

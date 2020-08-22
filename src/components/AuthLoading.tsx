@@ -4,7 +4,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import firebase from '../firebase'
-import useCurrentUser from '../hooks/useCurrentUser';
+// import useCurrentUser from '../hooks/useCurrentUser';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -23,16 +23,10 @@ const AuthLoading = () => {
   // }, [user])
 
   useEffect(() => {
-    function handleStatusChange(user) {
-      if (user) history.push("/profile")
-    }
-
     const unsbscribe = firebase.auth().onAuthStateChanged(user => {
-      handleStatusChange(user)
+      if (user) history.push("/profile")
     })
-    return () => {
-      unsbscribe()
-    }
+    return () => unsbscribe()
   })
 
   return (

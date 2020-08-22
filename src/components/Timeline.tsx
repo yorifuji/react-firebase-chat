@@ -10,11 +10,11 @@ interface Props {
 const Timeline = (props: Props) => {
   const channel = props.channel
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [timeline, setTimeline] = useState<Timeline[]>([]);
+  const [timeline, setTimeline] = useState<Message[]>([]);
   const [reactions, setReactions] = useState<Reaction[]>([])
 
   const convertSnapshot = (snapshot: firebase.firestore.QuerySnapshot) => {
-    const timeline: Timeline[] = []
+    const timeline: Message[] = []
     snapshot.forEach(doc => {
       const data = doc.data()
       console.log(data)

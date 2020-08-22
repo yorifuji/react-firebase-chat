@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { orange } from '@material-ui/core/colors';
 import { CardActions, Button, Grow, Chip, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Box } from '@material-ui/core';
-import { Emoji } from 'emoji-mart'
+import { Emoji, EmojiData } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
 import useCurrentUser from '../hooks/useCurrentUser';
@@ -34,15 +34,15 @@ const useStyles = makeStyles(() => ({
 
 type Props = {
   channel: string
-  message: any
-  reactions: any[]
+  message: Message
+  reactions: Reaction[]
 };
 
 const Message = (props: Props) => {
   const {channel, message, reactions} = props
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false)
-  const [summarizedReaction, setSummarizedReaction] = useState<any[]>([])
+  const [summarizedReaction, setSummarizedReaction] = useState<ReactionUI[]>([])
   const user = useCurrentUser()
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
@@ -54,7 +54,7 @@ const Message = (props: Props) => {
     setShowPicker(!showPicker)
   }
 
-  const firestore_add_reaction = (emoji: any) => {
+  const firestore_add_reaction = (emoji: string) => {
     db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").add({
       uid: user?.uid,
       channel: channel,
@@ -70,18 +70,18 @@ const Message = (props: Props) => {
     });
   }
 
-  const handleSelectEmoji = (emoji: any) => {
-    firestore_add_reaction(emoji.id)
+  const handleSelectEmoji = (emoji: EmojiData) => {
+    if (emoji.id != undefined) firestore_add_reaction(emoji.id)
     setShowPicker(false)
   }
 
-  const handleClickReaction = (reactions: any) => {
+  const handleClickReaction = (reactions: ReactionUI) => {
     console.log(reactions)
-    const reactions_me = reactions.items.filter((reaction: any) => reaction.uid == user?.uid)
+    const reactions_me = reactions.items.filter((reaction) => reaction.uid == user?.uid)
     console.log(reactions_me)
     if (reactions_me.length) {
       // remove
-      reactions_me.forEach(async (reaction: any) => {
+      reactions_me.forEach(async (reaction) => {
         const result = await db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").doc(reaction.id).delete()
         console.log(result)
       })
@@ -113,7 +113,7 @@ const Message = (props: Props) => {
   };
 
   useEffect(() => {
-    const summarize: any[] = []
+    const summarize: ReactionUI[] = []
     reactions.forEach(reaction => {
       const exists = summarize.find(s => s.emoji === reaction.emoji)
       if (exists) {

@@ -156,7 +156,7 @@ const Message = (props: Props) => {
             )
           }
           title={message.from}
-          subheader={toLocaleString(message.createdAt ? new Date(message.createdAt) : new Date())}
+          subheader={toLocaleString(message.createdAt)}
         />
         <CardContent className={classes.cardcontent}>
           <Typography variant="body1" component="p">

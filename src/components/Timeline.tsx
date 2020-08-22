@@ -7,14 +7,32 @@ interface Props {
   channel: string
 }
 
+interface Timeline {
+  id: string,
+  owner: string,
+  from: string,
+  body: string,
+  createdAt: Date,
+  metadata: any
+}
+
+interface Reaction {
+  id: string,
+  uid: string,
+  post: string,
+  channel: string,
+  emoji: string,
+  createdAt: Date
+}
+
 const Timeline = (props: Props) => {
   const channel = props.channel
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
-  const [timeline, setTimeline] = useState<any[]>([]);
-  const [reactions, setReactions] = useState<any[]>([])
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [timeline, setTimeline] = useState<Timeline[]>([]);
+  const [reactions, setReactions] = useState<Reaction[]>([])
 
   const convertSnapshot = (snapshot: firebase.firestore.QuerySnapshot) => {
-    const timeline: any[] = []
+    const timeline: Timeline[] = []
     snapshot.forEach(doc => {
       const data = doc.data()
       console.log(data)
@@ -23,9 +41,8 @@ const Timeline = (props: Props) => {
         owner: data.owner,
         from: data.from,
         body: data.body,
-        createdAt: data["createdAt"] ? data.createdAt.seconds * 1000 : Date.now(),
-        metadata: data["metadata"] ? data.metadata : null,
-        reactions: data["reactions"] ? data.reactions : null
+        createdAt: data["createdAt"] ? new Date(data.createdAt.seconds * 1000) : new Date(),
+        metadata: data["metadata"] ? data.metadata : {}
       })
     })
     setTimeline(timeline)
@@ -38,9 +55,16 @@ const Timeline = (props: Props) => {
 
   useEffect(() => {
     const unsubscribe = db.collectionGroup('reactions').onSnapshot(snapshot => {
-      const reactions: any[] = []
+      const reactions: Reaction[] = []
       snapshot.forEach(doc => {
-        reactions.push({id:doc.id, ...doc.data()})
+        reactions.push({
+          id: doc.id,
+          uid: doc.data().uid,
+          post: doc.data().post,
+          channel: doc.data().channel,
+          emoji: doc.data().emoji,
+          createdAt: doc.data().createdAt
+        })
       })
       reactions.sort((a,b) => {
         if (a.emoji > b.emoji) return 1
@@ -48,9 +72,7 @@ const Timeline = (props: Props) => {
       })
       setReactions(reactions)
     })
-    return () => {
-      unsubscribe()
-    }
+    return () => unsubscribe()
   }, [timeline])
 
   const getReactions = (messageID: string) => {

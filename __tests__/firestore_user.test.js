@@ -1,4 +1,4 @@
-const firebase = require('@firebase/testing');
+const firebase = require('@firebase/rules-unit-testing')
 const fs = require('fs');
 
 const project_id = "react-firebase-chat-test-user";
@@ -10,7 +10,9 @@ describe("テストの正常実行の確認", () => {
   })
 
   test("fail test", async () => {
-    await firebase.assertFails(Promise.reject());
+    await firebase.assertFails(Promise.reject({
+      message: 'PERMISSION_DENIED'
+    }));
   })
 })
 
@@ -58,14 +60,21 @@ describe("channelのテスト", () => {
     test("成功", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
-      const channels = firebase.assertSucceeds(db.collection("users").orderBy("name"))
-      await firebase.assertSucceeds(channels.get())
+      const users = db.collection("users").orderBy("name")
+      await firebase.assertSucceeds(users.get())
     })
 
     test("失敗（未認証）", async () => {
       const db = authedApp(null);
-      const channels = firebase.assertSucceeds(db.collection("users").orderBy("name"))
-      await firebase.assertFails(channels.get())
+      const users = db.collection("users").orderBy("name")
+      // await firebase.assertFails(channels.get())
+      const result = await users.get().catch(async error => {
+        if (error.code == 'permission-denied') {
+          await firebase.assertFails(Promise.reject({
+            message: 'PERMISSION_DENIED'
+          }));
+        }
+      })
     })
 
   })
@@ -154,7 +163,7 @@ describe("channelのテスト", () => {
       )
       await firebase.assertSucceeds(result)
     })
- 
+
     test("失敗（未認証）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);

@@ -1,4 +1,4 @@
-const firebase = require('@firebase/testing');
+const firebase = require('@firebase/rules-unit-testing');
 const fs = require('fs');
 
 const project_id = "test-reaction";
@@ -10,7 +10,9 @@ describe("テストの正常実行の確認", () => {
   })
 
   test("fail test", async () => {
-    await firebase.assertFails(Promise.reject());
+    await firebase.assertFails(Promise.reject({
+      message: 'PERMISSION_DENIED'
+    }));
   })
 })
 
@@ -62,13 +64,20 @@ describe("reactionのテスト", () => {
   describe("読み込み", () => {
 
     test("成功", async () => {
-      const collection = firebase.assertSucceeds(db.collectionGroup('reactions'))
+      const collection = db.collectionGroup('reactions')
       await firebase.assertSucceeds(collection.get())
     })
 
     test("失敗（未認証）", async () => {
-      const collection = firebase.assertSucceeds(db_null.collectionGroup('reactions'))
-      await firebase.assertFails(collection.get())
+      const collection = db_null.collectionGroup('reactions')
+      // await firebase.assertFails(collection.get())
+      const result = await collection.get().catch(async error => {
+        if (error.code == 'permission-denied') {
+          await firebase.assertFails(Promise.reject({
+            message: 'PERMISSION_DENIED'
+          }));
+        }
+      })
     })
 
   })

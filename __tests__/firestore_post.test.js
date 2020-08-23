@@ -1,4 +1,4 @@
-const firebase = require('@firebase/testing');
+const firebase = require('@firebase/rules-unit-testing');
 const fs = require('fs');
 
 const project_id = "react-firebase-chat-test-post";
@@ -10,7 +10,9 @@ describe("テストの正常実行の確認", () => {
   })
 
   test("fail test", async () => {
-    await firebase.assertFails(Promise.reject());
+    await firebase.assertFails(Promise.reject({
+      message: 'PERMISSION_DENIED'
+    }));
   })
 })
 
@@ -57,14 +59,21 @@ describe("postのテスト", () => {
 
     test("成功", async () => {
       const db = authedApp({ uid: 'alice' });
-      const posts = firebase.assertSucceeds(db.collection("channels").doc("post-channel").collection("posts").orderBy("createdAt"))
+      const posts = db.collection("channels").doc("post-channel").collection("posts").orderBy("createdAt")
       await firebase.assertSucceeds(posts.get())
     })
 
     test("失敗（未認証）", async () => {
       const db = authedApp(null);
-      const posts = firebase.assertSucceeds(db.collection("channels").doc("post-channel").collection("posts").orderBy("createdAt"))
-      await firebase.assertFails(posts.get())
+      const posts = db.collection("channels").doc("post-channel").collection("posts").orderBy("createdAt")
+      // await firebase.assertFails(posts.get())
+      const result = await posts.get().catch(async error => {
+        if (error.code == 'permission-denied') {
+          await firebase.assertFails(Promise.reject({
+            message: 'PERMISSION_DENIED'
+          }));
+        }
+      })
     })
 
   })
@@ -154,11 +163,11 @@ describe("postのテスト", () => {
         owner: user.uid,
         from: "alice",
         body: "message1",
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),        
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {}
       }))
     })
- 
+
     test("失敗（未認証）", async () => {
       const user = { uid: 'alice' }
       const db = authedApp(user);
@@ -174,7 +183,7 @@ describe("postのテスト", () => {
         owner: user.uid,
         from: "alice",
         body: "message1",
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),        
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {},
       }))
     })
@@ -241,7 +250,7 @@ describe("postのテスト", () => {
         owner: user.uid,
         from: "alice",
         body: "message1",
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),        
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
         metadata: {},
         foo: 0
       }))

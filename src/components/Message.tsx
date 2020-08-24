@@ -71,8 +71,10 @@ const Message = (props: Props) => {
   }
 
   const handleSelectEmoji = (emoji: EmojiData) => {
-    if (emoji.id != undefined) firestore_add_reaction(emoji.id)
     setShowPicker(false)
+    if (emoji.id === undefined) return
+    if (reactions.some(reaction => reaction.emoji === emoji.id && reaction.uid === user?.uid)) return
+    firestore_add_reaction(emoji.id)
   }
 
   const handleClickReaction = (reactions: ReactionUI) => {

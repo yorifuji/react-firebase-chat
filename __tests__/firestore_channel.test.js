@@ -68,14 +68,7 @@ describe("channelのテスト", () => {
     test("失敗（未認証）", async () => {
       const db = authedApp(null);
       const channels = db.collection("channels").orderBy("name")
-      // await firebase.assertFails(channels.get())
-      const result = await channels.get().catch(async error => {
-        if (error.code == 'permission-denied') {
-          await firebase.assertFails(Promise.reject({
-            message: 'PERMISSION_DENIED'
-          }));
-        }
-      })
+      await firebase.assertFails(channels.get())
     })
   })
 

@@ -70,14 +70,7 @@ describe("reactionのテスト", () => {
 
     test("失敗（未認証）", async () => {
       const collection = db_null.collectionGroup('reactions')
-      // await firebase.assertFails(collection.get())
-      const result = await collection.get().catch(async error => {
-        if (error.code == 'permission-denied') {
-          await firebase.assertFails(Promise.reject({
-            message: 'PERMISSION_DENIED'
-          }));
-        }
-      })
+      await firebase.assertFails(collection.get())
     })
 
   })

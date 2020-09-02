@@ -16,7 +16,7 @@ describe("テストの正常実行の確認", () => {
   })
 })
 
-describe("channelのテスト", () => {
+describe("userのテスト", () => {
 
   //実行前に一度だけ実行（初期化）
   beforeAll(
@@ -67,14 +67,7 @@ describe("channelのテスト", () => {
     test("失敗（未認証）", async () => {
       const db = authedApp(null);
       const users = db.collection("users").orderBy("name")
-      // await firebase.assertFails(channels.get())
-      const result = await users.get().catch(async error => {
-        if (error.code == 'permission-denied') {
-          await firebase.assertFails(Promise.reject({
-            message: 'PERMISSION_DENIED'
-          }));
-        }
-      })
+      await firebase.assertFails(users.get())
     })
 
   })

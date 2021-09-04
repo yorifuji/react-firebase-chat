@@ -58,7 +58,7 @@ const Timeline = (props: Props) => {
   }, [timeline])
 
   const getReactions = (messageID: string) => {
-    return reactions.filter(reaction => reaction.post == messageID)
+    return reactions.filter(reaction => reaction.post === messageID)
   }
 
   // auto scroll

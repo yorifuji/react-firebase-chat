@@ -79,7 +79,7 @@ const Message = (props: Props) => {
 
   const handleClickReaction = (reactions: ReactionUI) => {
     console.log(reactions)
-    const reactions_me = reactions.items.filter((reaction) => reaction.uid == user?.uid)
+    const reactions_me = reactions.items.filter((reaction) => reaction.uid === user?.uid)
     console.log(reactions_me)
     if (reactions_me.length) {
       // remove

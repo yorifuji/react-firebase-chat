@@ -1,22 +1,5 @@
 {
   "projects": {
-    "production": "yorifuji-react-firebase-chat",
-    "development": "yorifuji-react-firebase-chat-s"
-  },
-  "targets": {
-    "yorifuji-react-firebase-chat": {
-      "hosting": {
-        "yorifuji-react-firebase-chat": [
-          "yorifuji-react-firebase-chat"
-        ]
-      }
-    },
-    "yorifuji-react-firebase-chat-s": {
-      "hosting": {
-        "yorifuji-react-firebase-chat-s": [
-          "yorifuji-react-firebase-chat-s"
-        ]
-      }
-    }
+    "default": "react-firebase-chat-demo-32d02"
   }
 }

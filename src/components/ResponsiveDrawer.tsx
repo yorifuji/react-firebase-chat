@@ -29,7 +29,7 @@ import useIsOnline from '../hooks/useIsOnline'
 import useChannelList from '../hooks/useChannelList'
 import useCurrentChannel from '../hooks/useCurrentChannel'
 
-import firebase, {db} from '../firebase'
+import firebase, {db} from '../firebaseConfig'
 import useCurrentUser from '../hooks/useCurrentUser';
 
 

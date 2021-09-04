@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { db } from '../firebase'
+import { db } from '../firebaseConfig'
 import useIsOnline from './useIsOnline';
 
 function useChannelList() {

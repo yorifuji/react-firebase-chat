@@ -3,7 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import firebase from '../firebase'
+import firebase from '../firebaseConfig'
 // import useCurrentUser from '../hooks/useCurrentUser';
 
 const useStyles = makeStyles((theme) => ({

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Message from './Message';
-import {db} from '../firebase'
+import {db} from '../firebaseConfig'
 import { Box } from '@material-ui/core';
 
 interface Props {

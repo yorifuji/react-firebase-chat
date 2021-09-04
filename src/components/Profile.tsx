@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, Box, Button } from '@material-ui/core';
-import firebase from '../firebase';
+import firebase from '../firebaseConfig';
 import useCurrentUser from '../hooks/useCurrentUser'
 import { useHistory } from 'react-router-dom';
 

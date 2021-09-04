@@ -11,7 +11,7 @@ import { Emoji, EmojiData } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
 import useCurrentUser from '../hooks/useCurrentUser';
-import firebase, {db} from '../firebase'
+import firebase, {db} from '../firebaseConfig'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import IconButton from '@material-ui/core/IconButton';

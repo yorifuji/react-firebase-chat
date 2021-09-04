@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import firebase from '../firebase'
+import firebase from '../firebaseConfig'
 
 function useIsOnline() {
   const [isOnline, setIsOnline] = useState<boolean>(false);

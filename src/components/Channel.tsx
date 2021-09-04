@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { useParams, RouteComponentProps } from 'react-router-dom'
 
-import firebase, {db} from '../firebase'
+import firebase, {db} from '../firebaseConfig'
 import useCurrentUser from '../hooks/useCurrentUser';
 import Timeline from './Timeline'
 import { Button, Box } from '@material-ui/core';

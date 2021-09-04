@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
-import firebase from '../firebaseConfig'
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { firebaseApp } from '../firebaseConfig';
+const auth = getAuth(firebaseApp);
 
 function useCurrentUser() {
-  const [user, setUser] = useState<firebase.User | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    const unsbscribe = firebase.auth().onAuthStateChanged(setUser)
+    const unsbscribe = onAuthStateChanged(auth, setUser)
     return () => unsbscribe()
   }, [])
 

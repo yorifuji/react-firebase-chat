@@ -33,6 +33,7 @@ import useCurrentUser from '../hooks/useCurrentUser';
 import firebase from '../firebaseConfig'
 import { firebaseApp } from '../firebaseConfig';
 import { getFirestore, doc, deleteDoc, addDoc, collection } from "firebase/firestore";
+import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
 const drawerWidth = 240;
@@ -155,7 +156,7 @@ function ResponsiveDrawer(props: Props) {
     return location.pathname === channel
   }
 
-  const sendJoinMeeting = async (channel: string, user: firebase.User, message: string) => {
+  const sendJoinMeeting = async (channel: string, user: User, message: string) => {
 
     const post = {
       owner: user.uid,

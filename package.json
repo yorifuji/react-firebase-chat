@@ -20,6 +20,7 @@
     "emoji-mart": "^3.0.0",
     "firebase": "^7.19.0",
     "fs": "^0.0.1-security",
+    "jest": "^27.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
@@ -31,7 +32,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:rules": "firebase emulators:exec --only firestore \"jest\"",
+    "test:rules": "firebase emulators:exec --only firestore \"yarn jest\"",
     "eject": "react-scripts eject",
     "deploy": "yarn build && yarn firebase deploy"
   },

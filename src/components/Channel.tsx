@@ -3,10 +3,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { useParams } from 'react-router-dom'
 
-import firebase, {db} from '../firebaseConfig'
 import useCurrentUser from '../hooks/useCurrentUser';
 import Timeline from './Timeline'
 import { Button, Box } from '@material-ui/core';
+
+import firebase from '../firebaseConfig'
+import { firebaseApp } from '../firebaseConfig';
+import { getFirestore, addDoc, collection } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles((theme) => ({
   textfield: {
@@ -43,23 +47,18 @@ const Channel = () => {
     setInputValue("")
 }
 
-  const sendMessage = (channel: string, user: any, message: string) => {
+  const sendMessage = async (channel: string, user: any, message: string) => {
     if (message.length === 0) return
-    // Add a new document in collection "cities"
-    db.collection("channels").doc(channel).collection("posts").add({
+
+    const post = {
       owner: user.uid,
       from: user.displayName,
       body: message,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       metadata: {}
-    })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
-  }
+    };
+    await addDoc(collection(db, "channels", channel, "posts"), post)
+ }
 
   return (
     <Box>

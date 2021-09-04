@@ -1,7 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Message from './Message';
-import {db} from '../firebaseConfig'
 import { Box } from '@material-ui/core';
+import { firebaseApp } from '../firebaseConfig';
+import { collectionGroup, getFirestore, orderBy, QuerySnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 interface Props {
   channel: string
@@ -13,7 +16,7 @@ const Timeline = (props: Props) => {
   const [timeline, setTimeline] = useState<Message[]>([]);
   const [reactions, setReactions] = useState<Reaction[]>([])
 
-  const convertSnapshot = (snapshot: firebase.firestore.QuerySnapshot) => {
+  const convertSnapshot = (snapshot: QuerySnapshot) => {
     const timeline: Message[] = []
     snapshot.forEach(doc => {
       const data = doc.data()
@@ -31,14 +34,16 @@ const Timeline = (props: Props) => {
   }
 
   useEffect(() => {
-    const unsubscribe = db.collection("channels").doc(channel).collection("posts").orderBy("createdAt").onSnapshot(convertSnapshot)
+    const q = query(collection(db, "channels", channel, "posts"), orderBy("createdAt"));
+    const unsubscribe = onSnapshot(q, convertSnapshot)
     return () => unsubscribe()
   }, [channel])
 
   useEffect(() => {
-    const unsubscribe = db.collectionGroup('reactions').onSnapshot(snapshot => {
+    const q = query(collectionGroup(db, "reactions"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const reactions: Reaction[] = []
-      snapshot.forEach(doc => {
+      querySnapshot.forEach(doc => {
         reactions.push({
           id: doc.id,
           uid: doc.data().uid,
@@ -53,7 +58,7 @@ const Timeline = (props: Props) => {
         else return -1
       })
       setReactions(reactions)
-    })
+    });
     return () => unsubscribe()
   }, [timeline])
 

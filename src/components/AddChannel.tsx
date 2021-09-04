@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
-import firebase, {db} from '../firebaseConfig'
 import { Button, Snackbar, Box, SnackbarCloseReason } from '@material-ui/core';
 
 import MuiAlert from '@material-ui/lab/Alert';
 import useCurrentUser from '../hooks/useCurrentUser';
+
+import firebase from '../firebaseConfig'
+import { firebaseApp } from '../firebaseConfig';
+import { getFirestore, addDoc, collection } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 function Alert(props: any) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -36,21 +40,19 @@ const AddChannel = () => {
     }
   }
 
-  const addChannel = (channel: string) => {
+  const addChannel = async (channel: string) => {
     if (channel.length === 0) return
-    db.collection("channels").add({
+
+    const newChannel = {
       owner: user?.uid,
       name: channel,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(function() {
-      setInputValue("")
-      setOpen(true);
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+    }
+    await addDoc(collection(db, "channels"), newChannel)
+
+    setInputValue("")
+    setOpen(true);
+    console.log("Document successfully written!");
   }
 
   const handleClose = (event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {

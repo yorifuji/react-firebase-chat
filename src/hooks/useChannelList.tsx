@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react'
-import { db } from '../firebaseConfig'
 import useIsOnline from './useIsOnline';
+
+import firebase from '../firebaseConfig'
+import { firebaseApp } from '../firebaseConfig';
+import { getFirestore, orderBy, QuerySnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 function useChannelList() {
   const isOnline = useIsOnline()
   const [channelList, setChannelList] = useState<object[]>([]);
 
   useEffect(() => {
-    const convert = (snapshot: firebase.firestore.QuerySnapshot) => {
+    const convert = (snapshot: QuerySnapshot) => {
       let channelList: object[] = []
       snapshot.forEach((doc: firebase.firestore.DocumentData) => {
         channelList.push({
@@ -22,7 +27,8 @@ function useChannelList() {
     }
 
     if (isOnline) {
-      const unsubscribe = db.collection("channels").orderBy("name").onSnapshot(convert)
+      const q = query(collection(db, "channels"), orderBy("name"));
+      const unsubscribe = onSnapshot(q, convert)
       return () => unsubscribe()
     }
   }, [isOnline])

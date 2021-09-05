@@ -30,9 +30,8 @@ import useChannelList from '../hooks/useChannelList'
 import useCurrentChannel from '../hooks/useCurrentChannel'
 import useCurrentUser from '../hooks/useCurrentUser';
 
-import firebase from '../firebaseConfig'
 import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, doc, deleteDoc, addDoc, collection } from "firebase/firestore";
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
@@ -162,7 +161,7 @@ function ResponsiveDrawer(props: Props) {
       owner: user.uid,
       from: user.displayName,
       body: message,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
       metadata: {
         meeting: {
           url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${(new MediaStream()).id}`

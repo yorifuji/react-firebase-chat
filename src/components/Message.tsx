@@ -16,9 +16,8 @@ import { Picker } from 'emoji-mart'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import firebase from '../firebaseConfig'
 import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, doc, deleteDoc, addDoc, collection } from "firebase/firestore";
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles(() => ({
@@ -64,7 +63,7 @@ const Message = (props: Props) => {
       channel: channel,
       post: message.id,
       emoji: emoji,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
     }
     await addDoc(collection(db, "channels", channel, "posts", message.id, "reactions"), data)
   }

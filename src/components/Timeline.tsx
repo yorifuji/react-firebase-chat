@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Message from './Message';
 import { Box } from '@material-ui/core';
 import { firebaseApp } from '../firebaseConfig';

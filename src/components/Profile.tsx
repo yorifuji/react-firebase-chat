@@ -1,8 +1,13 @@
 import React from 'react';
 import { Grid, Box, Button } from '@material-ui/core';
-import firebase from '../firebaseConfig';
-import useCurrentUser from '../hooks/useCurrentUser'
 import { useHistory } from 'react-router-dom';
+
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { firebaseApp } from '../firebaseConfig';
+import useCurrentUser from '../hooks/useCurrentUser'
+
+
+const auth = getAuth(firebaseApp);
 
 // import { makeStyles } from '@material-ui/core/styles';
 // import { orange } from '@material-ui/core/colors';
@@ -19,23 +24,25 @@ const Profile = () => {
   const history = useHistory()
 
   const signin_google = () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider).then(() => {
+      console.log("done")
+    })
     history.push('/auth')
   };
 
   const signin_twitter = () => {
-    const provider = new firebase.auth.TwitterAuthProvider()
-    firebase.auth().signInWithRedirect(provider);
+    const provider = new TwitterAuthProvider()
+    signInWithRedirect(auth, provider).then(() => {})
     history.push('/auth')
   };
 
   const logout = () => {
-    firebase.auth().signOut();
+    auth.signOut()
   };
 
   const deleteAccount = () => {
-    firebase.auth().currentUser?.delete().then().catch(console.log);
+    auth.currentUser?.delete().then().catch(console.log);
   }
 
   return (

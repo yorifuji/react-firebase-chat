@@ -7,9 +7,8 @@ import { Button, Snackbar, Box, SnackbarCloseReason } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import useCurrentUser from '../hooks/useCurrentUser';
 
-import firebase from '../firebaseConfig'
 import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { getFirestore, addDoc, collection, serverTimestamp } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
 function Alert(props: any) {
@@ -46,7 +45,7 @@ const AddChannel = () => {
     const newChannel = {
       owner: user?.uid,
       name: channel,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: serverTimestamp()
     }
     await addDoc(collection(db, "channels"), newChannel)
 

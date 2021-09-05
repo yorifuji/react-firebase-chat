@@ -7,9 +7,8 @@ import useCurrentUser from '../hooks/useCurrentUser';
 import Timeline from './Timeline'
 import { Button, Box } from '@material-ui/core';
 
-import firebase from '../firebaseConfig'
 import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { getFirestore, addDoc, collection, serverTimestamp } from "firebase/firestore";
 const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +53,7 @@ const Channel = () => {
       owner: user.uid,
       from: user.displayName,
       body: message,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
       metadata: {}
     };
     await addDoc(collection(db, "channels", channel, "posts"), post)

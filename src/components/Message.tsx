@@ -11,11 +11,14 @@ import { Emoji, EmojiData } from 'emoji-mart'
 import 'emoji-mart/css/emoji-mart.css'
 import "./Message.css"
 import useCurrentUser from '../hooks/useCurrentUser';
-import firebase, {db} from '../firebaseConfig'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+
+import { firebaseApp } from '../firebaseConfig';
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -54,20 +57,15 @@ const Message = (props: Props) => {
     setShowPicker(!showPicker)
   }
 
-  const firestore_add_reaction = (emoji: string) => {
-    db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").add({
+  const firestore_add_reaction = async (emoji: string) => {
+    const data = {
       uid: user?.uid,
       channel: channel,
       post: message.id,
       emoji: emoji,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+      createdAt: serverTimestamp(),
+    }
+    await addDoc(collection(db, "channels", channel, "posts", message.id, "reactions"), data)
   }
 
   const handleSelectEmoji = (emoji: EmojiData) => {
@@ -84,8 +82,7 @@ const Message = (props: Props) => {
     if (reactions_me.length) {
       // remove
       reactions_me.forEach(async (reaction) => {
-        const result = await db.collection("channels").doc(channel).collection("posts").doc(message.id).collection("reactions").doc(reaction.id).delete()
-        console.log(result)
+        await deleteDoc(doc(db, "channels", channel, "posts", message.id, "reactions", reaction.id))
       })
     }
     else {
@@ -102,15 +99,8 @@ const Message = (props: Props) => {
     setOpenDeleteDialog(false)
   }
 
-  const handleClickOkDeleteDialog = () => {
-    db.collection("channels").doc(channel).collection("posts").doc(message.id).delete()
-    .then(function() {
-      console.log("Document successfully delete!");
-    })
-    .catch(function(error) {
-      console.error("Error delete document: ", error);
-    });
-
+  const handleClickOkDeleteDialog = async () => {
+    await deleteDoc(doc(db, "channels", channel, "posts", message.id))
     setOpenDeleteDialog(false)
   };
 

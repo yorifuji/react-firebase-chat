@@ -28,10 +28,12 @@ import InviteMeetng from './InviteMeeting'
 import useIsOnline from '../hooks/useIsOnline'
 import useChannelList from '../hooks/useChannelList'
 import useCurrentChannel from '../hooks/useCurrentChannel'
-
-import firebase, {db} from '../firebaseConfig'
 import useCurrentUser from '../hooks/useCurrentUser';
 
+import { firebaseApp } from '../firebaseConfig';
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { User } from 'firebase/auth';
+const db = getFirestore(firebaseApp);
 
 const drawerWidth = 240;
 
@@ -153,34 +155,24 @@ function ResponsiveDrawer(props: Props) {
     return location.pathname === channel
   }
 
-  const sendJoinMeeting = (channel: string, user: firebase.User, message: string) => {
-    // Add a new document in collection "cities"
-    db.collection("channels").doc(channel).collection("posts").add({
+  const sendJoinMeeting = async (channel: string, user: User, message: string) => {
+
+    const post = {
       owner: user.uid,
       from: user.displayName,
       body: message,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
       metadata: {
         meeting: {
           url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${(new MediaStream()).id}`
         }
       }
-    })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+    }
+    await addDoc(collection(db, "channels", channel, "posts"), post)
   }
 
-  const deleteChannel = (id: string) => {
-    db.collection("channels").doc(id).delete().then(function() {
-      console.log("Document successfully deleted!");
-      history.push("/profile")
-    }).catch(function(error) {
-        console.error("Error removing document: ", error);
-    });
+  const deleteChannel = async (id: string) => {
+    await deleteDoc(doc(db, "channels", id));
   }
 
   const getChannelTitle = () => {

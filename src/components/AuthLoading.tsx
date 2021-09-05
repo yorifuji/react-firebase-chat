@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import firebase from '../firebaseConfig'
 // import useCurrentUser from '../hooks/useCurrentUser';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { firebaseApp } from '../firebaseConfig';
+const auth = getAuth(firebaseApp);
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -23,7 +25,7 @@ const AuthLoading = () => {
   // }, [user])
 
   useEffect(() => {
-    const unsbscribe = firebase.auth().onAuthStateChanged(user => {
+    const unsbscribe = onAuthStateChanged(auth, (user) => {
       if (user) history.push("/profile")
     })
     return () => unsbscribe()

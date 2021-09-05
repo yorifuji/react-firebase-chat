@@ -1,6 +1,5 @@
 import * as testing from '@firebase/rules-unit-testing'
 import { serverTimestamp } from 'firebase/firestore'
-import { doc, setDoc } from "firebase/firestore";
 import fs from 'fs'
 
 let testEnv: testing.RulesTestEnvironment | null
@@ -15,6 +14,7 @@ beforeEach( async () => {
 })
 
 afterEach( async () => {
+  await testEnv.clearFirestore()
   await testEnv.cleanup()
   testEnv = null
 })
@@ -29,14 +29,8 @@ describe('this is test', () =>{
     const firestore = ctx.firestore()
     // storage = ctx.storage()
 
-    // pass test
+    // test
     await testing.assertSucceeds(firestore.collection("channels").add({
-      owner: "user_123",
-      name: "channel-123",
-      createdAt: serverTimestamp()
-    }))
-
-    await testing.assertSucceeds(firestore.doc("channels/test").set({
       owner: "user_123",
       name: "channel-123",
       createdAt: serverTimestamp()
@@ -44,13 +38,13 @@ describe('this is test', () =>{
   })
 
   test('fail test', async () => {
-    // create unautenticate context
+    // create unauthenticate context
     const ctx = testEnv.unauthenticatedContext()
 
     // use firestore
     const firestore = ctx.firestore()
 
-    // fail test
+    // test
     await testing.assertFails(firestore.collection("channels").add({
       owner: "user_123",
       name: "channel-123",

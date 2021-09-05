@@ -4,7 +4,6 @@ import fs from 'fs'
 
 let testEnv: testing.RulesTestEnvironment | null
 
-
 beforeEach( async () => {
   testEnv = await testing.initializeTestEnvironment({
     projectId: "my-project-id-user",
@@ -15,7 +14,7 @@ beforeEach( async () => {
 })
 
 afterEach( async () => {
-  testEnv.clearFirestore()
+  await testEnv.clearFirestore()
   await testEnv.cleanup()
   testEnv = null
 })

@@ -1,11 +1,15 @@
-import * as testing from '@firebase/rules-unit-testing'
+import {
+  RulesTestEnvironment,
+  initializeTestEnvironment,
+  assertSucceeds,
+  assertFails} from '@firebase/rules-unit-testing'
 import { serverTimestamp } from 'firebase/firestore'
 import fs from 'fs'
 
-let testEnv: testing.RulesTestEnvironment | null
+let testEnv: RulesTestEnvironment | null
 
 beforeEach( async () => {
-  testEnv = await testing.initializeTestEnvironment({
+  testEnv = await initializeTestEnvironment({
     projectId: "my-project-id",
     firestore: {
       rules: fs.readFileSync('./firestore.rules', 'utf8')
@@ -30,11 +34,12 @@ describe('this is test', () =>{
     // storage = ctx.storage()
 
     // test
-    await testing.assertSucceeds(firestore.collection("channels").add({
+    const ref = firestore.collection("channels").add({
       owner: "user_123",
       name: "channel-123",
       createdAt: serverTimestamp()
-    }))
+    })
+    await assertSucceeds(ref)
   })
 
   test('fail test', async () => {
@@ -45,11 +50,12 @@ describe('this is test', () =>{
     const firestore = ctx.firestore()
 
     // test
-    await testing.assertFails(firestore.collection("channels").add({
+    const ref = firestore.collection("channels").add({
       owner: "user_123",
       name: "channel-123",
       createdAt: serverTimestamp()
-    }))
+    })
+    await assertFails(ref)
   })
 
 })

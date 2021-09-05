@@ -8,19 +8,26 @@ import fs from 'fs'
 
 let testEnv: RulesTestEnvironment | null
 
-beforeEach( async () => {
+beforeAll( async () => {
   testEnv = await initializeTestEnvironment({
-    projectId: "my-project-id",
+    projectId: "sample",
     firestore: {
       rules: fs.readFileSync('./firestore.rules', 'utf8')
     }
   })
+});
+
+afterAll( async () => {
+  await testEnv.cleanup()
+  testEnv = null
+});
+
+
+beforeEach( async () => {
+  await testEnv.clearFirestore()
 })
 
 afterEach( async () => {
-  await testEnv.clearFirestore()
-  await testEnv.cleanup()
-  testEnv = null
 })
 
 describe('this is test', () =>{

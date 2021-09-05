@@ -4,20 +4,22 @@ import fs from 'fs'
 
 let testEnv: testing.RulesTestEnvironment | null
 
-beforeEach( async () => {
+beforeAll( async () => {
   testEnv = await testing.initializeTestEnvironment({
-    projectId: "my-project-id-reaction",
+    projectId: "reaction",
     firestore: {
       rules: fs.readFileSync('./firestore.rules', 'utf8')
     }
   })
-})
+});
 
-afterEach( async () => {
-  await testEnv.clearFirestore()
+afterAll( async () => {
   await testEnv.cleanup()
   testEnv = null
-})
+});
+
+beforeEach(async () => { await testEnv.clearFirestore() })
+afterEach(async () => {})
 
 describe("作成", () => {
 

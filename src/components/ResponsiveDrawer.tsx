@@ -288,7 +288,7 @@ function ResponsiveDrawer(props: Props) {
               ? 'Add Channel'
               : location.pathname.indexOf('/channel') === 0
               ? getChannelTitle()
-              : 'Workspace'}
+              : '(Preview)Workspace'}
           </Typography>
           {isOnline && isLocationChannel() && (
             <Tooltip title='Video Chat' aria-label='Video Chat'>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
@@ -18,12 +17,12 @@ function App() {
           primary: blue,
         },
       }),
-    [prefersDarkMode],
+    [prefersDarkMode]
   );
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline/>
+      <CssBaseline />
       <BrowserRouter>
         <ResponsiveDrawer />
       </BrowserRouter>

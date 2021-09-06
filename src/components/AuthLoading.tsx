@@ -4,7 +4,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 // import useCurrentUser from '../hooks/useCurrentUser';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig';
 const auth = getAuth(firebaseApp);
 
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 const AuthLoading = () => {
   const classes = useStyles();
-  const history = useHistory()
+  const history = useHistory();
   // const user = useCurrentUser()
 
   // useEffect(() => {
@@ -26,16 +26,16 @@ const AuthLoading = () => {
 
   useEffect(() => {
     const unsbscribe = onAuthStateChanged(auth, (user) => {
-      if (user) history.push("/profile")
-    })
-    return () => unsbscribe()
-  })
+      if (user) history.push('/profile');
+    });
+    return () => unsbscribe();
+  });
 
   return (
     <Backdrop className={classes.backdrop} open={true}>
-      <CircularProgress color="inherit" />
+      <CircularProgress color='inherit' />
     </Backdrop>
-  )
-}
+  );
+};
 
-export default AuthLoading
+export default AuthLoading;

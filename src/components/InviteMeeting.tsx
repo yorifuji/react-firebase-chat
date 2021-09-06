@@ -10,29 +10,37 @@ import { useState } from 'react';
 import { Box } from '@material-ui/core';
 
 interface Props {
-  onOK: Function,
-  onCancel: Function
+  onOK: Function;
+  onCancel: Function;
 }
 
 const InviteMeeting = (props: Props) => {
-  const [inputValue, setInputValue] = useState("Let's start meeting.")
+  const [inputValue, setInputValue] = useState("Let's start meeting.");
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setInputValue(e.target.value)
+  function handleInputChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    setInputValue(e.target.value);
   }
 
   const handleCancel = () => {
-    props.onCancel()
+    props.onCancel();
   };
 
   const handleOK = () => {
-    props.onOK(inputValue)
+    props.onOK(inputValue);
   };
 
   return (
     <Box>
-      <Dialog open={true} onClose={handleCancel} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Send Meeting Invitation</DialogTitle>
+      <Dialog
+        open={true}
+        onClose={handleCancel}
+        aria-labelledby='form-dialog-title'
+      >
+        <DialogTitle id='form-dialog-title'>
+          Send Meeting Invitation
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Send a meeting invitation message to this channel.
@@ -40,25 +48,25 @@ const InviteMeeting = (props: Props) => {
           <TextField
             defaultValue={inputValue}
             autoFocus
-            margin="dense"
-            label="Message"
-            type="text"
+            margin='dense'
+            label='Message'
+            type='text'
             fullWidth
             value={inputValue}
             onChange={handleInputChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} variant="contained">
+          <Button onClick={handleCancel} variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleOK} variant="contained" color="primary">
+          <Button onClick={handleOK} variant='contained' color='primary'>
             Send
           </Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
-}
+};
 
-export default InviteMeeting
+export default InviteMeeting;

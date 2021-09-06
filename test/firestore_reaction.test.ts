@@ -6,7 +6,7 @@ let testEnv: testing.RulesTestEnvironment | null;
 
 beforeEach(async () => {
   testEnv = await testing.initializeTestEnvironment({
-    projectId: 'my-project-id-reaction',
+    projectId: 'reaction',
     firestore: {
       rules: fs.readFileSync('./firestore.rules', 'utf8'),
     },

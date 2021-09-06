@@ -12,8 +12,18 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Route, Link, useLocation, useHistory} from 'react-router-dom'
-import { Tooltip, ListItemSecondaryAction, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core';
+import { Route, Link, useLocation, useHistory } from 'react-router-dom';
+import {
+  Tooltip,
+  ListItemSecondaryAction,
+  ListItemIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -21,17 +31,24 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 import Channel from './Channel';
 import Profile from './Profile';
-import AddChannel from './AddChannel'
-import AuthLoading from './AuthLoading'
-import InviteMeetng from './InviteMeeting'
+import AddChannel from './AddChannel';
+import AuthLoading from './AuthLoading';
+import InviteMeetng from './InviteMeeting';
 
-import useIsOnline from '../hooks/useIsOnline'
-import useChannelList from '../hooks/useChannelList'
-import useCurrentChannel from '../hooks/useCurrentChannel'
+import useIsOnline from '../hooks/useIsOnline';
+import useChannelList from '../hooks/useChannelList';
+import useCurrentChannel from '../hooks/useCurrentChannel';
 import useCurrentUser from '../hooks/useCurrentUser';
 
 import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  deleteDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
@@ -77,23 +94,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  window: any
+  window: any;
 }
 
 function ResponsiveDrawer(props: Props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
-  const history = useHistory()
+  const history = useHistory();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [oepnDeleteDialog, setOpenDeleteDialog] = useState(false)
-  const [openInviteDialog, setOpenInvitedialog] = useState(false)
+  const [oepnDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openInviteDialog, setOpenInvitedialog] = useState(false);
 
-  const isOnline = useIsOnline()
-  const channelList = useChannelList()
-  const location: any = useLocation()
-  const currentChannel = useCurrentChannel(location)
-  const user = useCurrentUser()
+  const isOnline = useIsOnline();
+  const channelList = useChannelList();
+  const location: any = useLocation();
+  const currentChannel = useCurrentChannel(location);
+  const user = useCurrentUser();
   // console.log(user)
 
   const handleDrawerToggle = () => {
@@ -101,20 +118,20 @@ function ResponsiveDrawer(props: Props) {
   };
 
   const handleShowInviteMeeting = () => {
-    setOpenInvitedialog(true)
-  }
+    setOpenInvitedialog(true);
+  };
 
   const handleInviteMeetingCancel = () => {
-    setOpenInvitedialog(false)
-  }
+    setOpenInvitedialog(false);
+  };
 
   const handleInviteMeetingOK = (message: string) => {
-    console.log(message)
+    console.log(message);
     if (currentChannel && user && message) {
-      sendJoinMeeting(currentChannel, user, message)
-      setOpenInvitedialog(false)
+      sendJoinMeeting(currentChannel, user, message);
+      setOpenInvitedialog(false);
     }
-  }
+  };
 
   const handleClickOpenDeleteDialog = () => {
     setOpenDeleteDialog(true);
@@ -123,7 +140,7 @@ function ResponsiveDrawer(props: Props) {
   const handleClickOkDeleteDialog = () => {
     setOpenDeleteDialog(false);
     if (currentChannel) {
-      deleteChannel(currentChannel)
+      deleteChannel(currentChannel);
     }
   };
 
@@ -132,31 +149,39 @@ function ResponsiveDrawer(props: Props) {
   };
 
   const isLocationChannel = () => {
-    if (location.pathname.indexOf("/channel/") === 0) {
-      return location.pathname.substring("/channel/".length).length > 0 ? true : false
+    if (location.pathname.indexOf('/channel/') === 0) {
+      return location.pathname.substring('/channel/'.length).length > 0
+        ? true
+        : false;
     }
-    return false
-  }
+    return false;
+  };
 
   const isOnwerChannel = () => {
-    if (location.pathname.indexOf("/channel/") === 0) {
-      const channelID = location.pathname.substring("/channel/".length)
+    if (location.pathname.indexOf('/channel/') === 0) {
+      const channelID = location.pathname.substring('/channel/'.length);
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter((channel: any) => channel.id === channelID && channel.owner === user?.uid)
+      const channel = channelList.filter(
+        (channel: any) =>
+          channel.id === channelID && channel.owner === user?.uid
+      );
       // console.log(channel)
-      if (channel.length > 0) return true
+      if (channel.length > 0) return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const isCurrentPath = (channel: string) => {
-    return location.pathname === channel
-  }
+    return location.pathname === channel;
+  };
 
-  const sendJoinMeeting = async (channel: string, user: User, message: string) => {
-
+  const sendJoinMeeting = async (
+    channel: string,
+    user: User,
+    message: string
+  ) => {
     const post = {
       owner: user.uid,
       from: user.displayName,
@@ -164,24 +189,26 @@ function ResponsiveDrawer(props: Props) {
       createdAt: serverTimestamp(),
       metadata: {
         meeting: {
-          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${(new MediaStream()).id}`
-        }
-      }
-    }
-    await addDoc(collection(db, "channels", channel, "posts"), post)
-  }
+          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${
+            new MediaStream().id
+          }`,
+        },
+      },
+    };
+    await addDoc(collection(db, 'channels', channel, 'posts'), post);
+  };
 
   const deleteChannel = async (id: string) => {
-    await deleteDoc(doc(db, "channels", id));
-  }
+    await deleteDoc(doc(db, 'channels', id));
+  };
 
   const getChannelTitle = () => {
-    let title = "Channel"
+    let title = 'Channel';
     channelList.forEach((channel: any) => {
-      if (channel.id === currentChannel) title = `#${channel.name}`
-    })
-    return title
-  }
+      if (channel.id === currentChannel) title = `#${channel.name}`;
+    });
+    return title;
+  };
 
   // const users = ["yorifuji", "foo", "bar"]
 
@@ -190,27 +217,38 @@ function ResponsiveDrawer(props: Props) {
       {/* <div className={classes.toolbar} />
       <Divider /> */}
       <List>
-        <ListItem button component={Link} to="/profile" selected={isCurrentPath("/profile")}>
-          <ListItemIcon><AccountCircleIcon/></ListItemIcon>
-          <ListItemText primary="Profile" />
+        <ListItem
+          button
+          component={Link}
+          to='/profile'
+          selected={isCurrentPath('/profile')}
+        >
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary='Profile' />
         </ListItem>
         <ListItem>
-        <ListItemIcon><ChatIcon/></ListItemIcon>
-          <ListItemText primary="Channel" />
+          <ListItemIcon>
+            <ChatIcon />
+          </ListItemIcon>
+          <ListItemText primary='Channel' />
           <ListItemSecondaryAction>
             <IconButton onClick={() => history.push('/addChannel')}>
-              {
-                isOnline && (
-                  <AddIcon />
-                )
-              }
+              {isOnline && <AddIcon />}
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
         {channelList.map((channel: any) => (
-          <ListItem button key={channel.id} className={classes.nested} component={Link} to={"/channel/" + channel.id}
-          selected={isCurrentPath("/channel/" + channel.id)} >
-            <ListItemText primary={"# " + channel.name} />
+          <ListItem
+            button
+            key={channel.id}
+            className={classes.nested}
+            component={Link}
+            to={'/channel/' + channel.id}
+            selected={isCurrentPath('/channel/' + channel.id)}
+          >
+            <ListItemText primary={'# ' + channel.name} />
           </ListItem>
         ))}
         {/* <ListItem>
@@ -225,63 +263,63 @@ function ResponsiveDrawer(props: Props) {
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position='fixed' className={classes.appBar}>
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
+            color='inherit'
+            aria-label='open drawer'
+            edge='start'
             onClick={handleDrawerToggle}
             className={classes.menuButton}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap className={classes.title}>
-            {
-              location.pathname === "/profile" ? "Profile" :
-              location.pathname === "/auth" ? "Loading" :
-              location.pathname === "/addChannel" ? "Add Channel" :
-              location.pathname.indexOf("/channel") === 0 ? getChannelTitle() : "Workspace"
-            }
+          <Typography variant='h6' noWrap className={classes.title}>
+            {location.pathname === '/profile'
+              ? 'Profile'
+              : location.pathname === '/auth'
+              ? 'Loading'
+              : location.pathname === '/addChannel'
+              ? 'Add Channel'
+              : location.pathname.indexOf('/channel') === 0
+              ? getChannelTitle()
+              : 'Workspace'}
           </Typography>
-          {
-            isOnline && isLocationChannel() && (
-              <Tooltip title="Video Chat" aria-label="Video Chat">
-                <IconButton
-                  aria-label="video chat"
-                  color="inherit"
-                  onClick={handleShowInviteMeeting}
-                >
-                  <VideocamIcon />
-                </IconButton>
-              </Tooltip>
-            )
-          }
-          {
-            isOnline && isLocationChannel() && isOnwerChannel() && (
-              <Tooltip title="Delete This Channel" aria-label="delete channel">
-                <IconButton
-                  aria-label="delete channel"
-                  color="inherit"
-                  onClick={handleClickOpenDeleteDialog}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            )
-          }
+          {isOnline && isLocationChannel() && (
+            <Tooltip title='Video Chat' aria-label='Video Chat'>
+              <IconButton
+                aria-label='video chat'
+                color='inherit'
+                onClick={handleShowInviteMeeting}
+              >
+                <VideocamIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+          {isOnline && isLocationChannel() && isOnwerChannel() && (
+            <Tooltip title='Delete This Channel' aria-label='delete channel'>
+              <IconButton
+                aria-label='delete channel'
+                color='inherit'
+                onClick={handleClickOpenDeleteDialog}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Toolbar>
       </AppBar>
-      <nav className={classes.drawer} aria-label="workspace">
+      <nav className={classes.drawer} aria-label='workspace'>
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
+        <Hidden smUp implementation='css'>
           <Drawer
             container={container}
-            variant="temporary"
+            variant='temporary'
             anchor={theme.direction === 'rtl' ? 'right' : 'left'}
             open={mobileOpen}
             onClose={handleDrawerToggle}
@@ -295,12 +333,12 @@ function ResponsiveDrawer(props: Props) {
             {drawer}
           </Drawer>
         </Hidden>
-        <Hidden xsDown implementation="css">
+        <Hidden xsDown implementation='css'>
           <Drawer
             classes={{
               paper: classes.drawerPaper,
             }}
-            variant="permanent"
+            variant='permanent'
             open
           >
             {drawer}
@@ -308,7 +346,7 @@ function ResponsiveDrawer(props: Props) {
         </Hidden>
       </nav>
       <main className={classes.content}>
-        <div className={classes.toolbar}/>
+        <div className={classes.toolbar} />
         <Route exact path='/' component={Index} />
         <Route exact path='/auth' component={AuthLoading} />
         <Route exact path='/profile' component={Profile} />
@@ -319,30 +357,38 @@ function ResponsiveDrawer(props: Props) {
       <Dialog
         open={oepnDeleteDialog}
         // onClose={handleClickCanelDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        >
-        <DialogTitle id="alert-dialog-title">Delete Channel</DialogTitle>
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>Delete Channel</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id='alert-dialog-description'>
             Are you sure you want to delete this channel?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClickCanelDeleteDialog} variant="contained" autoFocus>
+          <Button
+            onClick={handleClickCanelDeleteDialog}
+            variant='contained'
+            autoFocus
+          >
             Cancel
           </Button>
-          <Button onClick={handleClickOkDeleteDialog} variant="contained" color="secondary">
+          <Button
+            onClick={handleClickOkDeleteDialog}
+            variant='contained'
+            color='secondary'
+          >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-      {
-        openInviteDialog &&
-          <InviteMeetng
-            onCancel={() => handleInviteMeetingCancel()}
-            onOK={(message: string) => handleInviteMeetingOK(message)}/>
-      }
+      {openInviteDialog && (
+        <InviteMeetng
+          onCancel={() => handleInviteMeetingCancel()}
+          onOK={(message: string) => handleInviteMeetingOK(message)}
+        />
+      )}
     </div>
   );
 }
@@ -358,9 +404,5 @@ ResponsiveDrawer.propTypes = {
 export default ResponsiveDrawer;
 
 const Index = () => {
-  return (
-    <div></div>
-  )
-}
-
-
+  return <div></div>;
+};

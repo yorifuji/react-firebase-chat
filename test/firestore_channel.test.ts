@@ -4,7 +4,7 @@ import fs from 'fs';
 
 let testEnv: testing.RulesTestEnvironment | null;
 
-beforeEach(async () => {
+beforeAll(async () => {
   testEnv = await testing.initializeTestEnvironment({
     projectId: 'channel',
     firestore: {
@@ -13,11 +13,15 @@ beforeEach(async () => {
   });
 });
 
-afterEach(async () => {
-  await testEnv.clearFirestore();
+afterAll(async () => {
   await testEnv.cleanup();
   testEnv = null;
 });
+
+beforeEach(async () => {
+  await testEnv.clearFirestore();
+});
+afterEach(async () => {});
 
 describe('作成', () => {
   test('成功', async () => {

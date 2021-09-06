@@ -9,7 +9,7 @@ import fs from 'fs';
 
 let testEnv: RulesTestEnvironment | null;
 
-beforeEach(async () => {
+beforeAll(async () => {
   testEnv = await initializeTestEnvironment({
     projectId: 'sample',
     firestore: {
@@ -18,11 +18,16 @@ beforeEach(async () => {
   });
 });
 
-afterEach(async () => {
-  await testEnv.clearFirestore();
+afterAll(async () => {
   await testEnv.cleanup();
   testEnv = null;
 });
+
+beforeEach(async () => {
+  await testEnv.clearFirestore();
+});
+
+afterEach(async () => {});
 
 describe('this is test', () => {
   test('pass test', async () => {

@@ -13,6 +13,9 @@
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "editor.lineNumbers": "on",
   "editor.rulers": [80],
   "editor.wordWrap": "on",
@@ -20,5 +23,7 @@
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "npm.packageManager": "yarn",
+  "prettier.jsxSingleQuote": true,
+  "prettier.singleQuote": true,
   "typescript.enablePromptUseWorkspaceTsdk": true
 }

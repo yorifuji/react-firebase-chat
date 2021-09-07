@@ -1,0 +1,11 @@
+name: Test Firestore rules on PR
+'on': pull_request
+jobs:
+  build_and_preview:
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install && yarn add firebase-tools
+      - run: yarn test:rules

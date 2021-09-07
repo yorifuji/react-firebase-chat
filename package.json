@@ -31,7 +31,10 @@
     "test:rules": "firebase emulators:exec --only firestore \"yarn jest\"",
     "eject": "react-scripts eject",
     "deploy": "yarn build && firebase deploy",
-    "clean": "git clean -dfx && rm -f yarn.lock"
+    "clean": "git clean -dfx && rm -f yarn.lock",
+    "format": "prettier --write src/",
+    "lint": "eslint --fix src/",
+    "fix": "yarn run format && yarn run lint"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AuthLoading = () => {
+const AuthLoading = (): JSX.Element => {
   const classes = useStyles();
   const history = useHistory();
   // const user = useCurrentUser()

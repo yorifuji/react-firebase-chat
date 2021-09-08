@@ -100,7 +100,7 @@ const Message = (props: Props) => {
       )
     )
       return;
-    firestore_add_reaction(emoji.id);
+    firestore_add_reaction(emoji.id).catch(console.log);
   };
 
   const handleClickReaction = (reactions: ReactionUI) => {
@@ -111,6 +111,7 @@ const Message = (props: Props) => {
     console.log(reactions_me);
     if (reactions_me.length) {
       // remove
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       reactions_me.forEach(async (reaction) => {
         await deleteDoc(
           doc(
@@ -126,7 +127,7 @@ const Message = (props: Props) => {
       });
     } else {
       // add
-      firestore_add_reaction(reactions.emoji);
+      firestore_add_reaction(reactions.emoji).catch(console.log);
     }
   };
 

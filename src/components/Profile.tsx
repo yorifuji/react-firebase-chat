@@ -23,26 +23,24 @@ const auth = getAuth(firebaseApp);
 //   }
 // }));
 
-const Profile = () => {
+const Profile = (): JSX.Element => {
   const user = useCurrentUser();
   const history = useHistory();
 
   const signin_google = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider).then(() => {
-      console.log('done');
-    });
+    signInWithRedirect(auth, provider).catch(console.log);
     history.push('/auth');
   };
 
   const signin_twitter = () => {
     const provider = new TwitterAuthProvider();
-    signInWithRedirect(auth, provider).then(() => {});
+    signInWithRedirect(auth, provider).catch(console.log);
     history.push('/auth');
   };
 
   const logout = () => {
-    auth.signOut();
+    auth.signOut().catch(console.log);
   };
 
   const deleteAccount = () => {

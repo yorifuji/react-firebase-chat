@@ -10,8 +10,8 @@ import { useState } from 'react';
 import { Box } from '@material-ui/core';
 
 interface Props {
-  onOK: Function;
-  onCancel: Function;
+  onOK: (arg0: string) => void;
+  onCancel: () => void;
 }
 
 const InviteMeeting = (props: Props) => {

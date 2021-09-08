@@ -11,13 +11,13 @@ import {
 import { collection, query, onSnapshot } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
-function useChannelList() {
+function useChannelList(): Channel[] {
   const isOnline = useIsOnline();
-  const [channelList, setChannelList] = useState<object[]>([]);
+  const [channelList, setChannelList] = useState<Channel[]>([]);
 
   useEffect(() => {
     const convert = (snapshot: QuerySnapshot) => {
-      let channelList: object[] = [];
+      const channelList: Channel[] = [];
       snapshot.forEach((doc: DocumentData) => {
         channelList.push({
           id: doc.id,

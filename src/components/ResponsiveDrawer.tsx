@@ -128,7 +128,7 @@ function ResponsiveDrawer(props: Props) {
   const handleInviteMeetingOK = (message: string) => {
     console.log(message);
     if (currentChannel && user && message) {
-      sendJoinMeeting(currentChannel, user, message);
+      sendJoinMeeting(currentChannel, user, message).catch(console.log);
       setOpenInvitedialog(false);
     }
   };
@@ -140,7 +140,7 @@ function ResponsiveDrawer(props: Props) {
   const handleClickOkDeleteDialog = () => {
     setOpenDeleteDialog(false);
     if (currentChannel) {
-      deleteChannel(currentChannel);
+      deleteChannel(currentChannel).catch(console.log);
     }
   };
 
@@ -164,7 +164,7 @@ function ResponsiveDrawer(props: Props) {
       // console.log(user && user.uid)
       // console.log(channelList)
       const channel = channelList.filter(
-        (channel: any) =>
+        (channel: Channel) =>
           channel.id === channelID && channel.owner === user?.uid
       );
       // console.log(channel)
@@ -204,7 +204,7 @@ function ResponsiveDrawer(props: Props) {
 
   const getChannelTitle = () => {
     let title = 'Channel';
-    channelList.forEach((channel: any) => {
+    channelList.forEach((channel: Channel) => {
       if (channel.id === currentChannel) title = `#${channel.name}`;
     });
     return title;
@@ -239,16 +239,16 @@ function ResponsiveDrawer(props: Props) {
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-        {channelList.map((channel: any) => (
+        {channelList.map((channel: Channel) => (
           <ListItem
             button
             key={channel.id}
             className={classes.nested}
             component={Link}
-            to={'/channel/' + channel.id}
-            selected={isCurrentPath('/channel/' + channel.id)}
+            to={`/channel/${channel.id}`}
+            selected={isCurrentPath(`/channel/${channel.id}`)}
           >
-            <ListItemText primary={'# ' + channel.name} />
+            <ListItemText primary={`# ${channel.name}`} />
           </ListItem>
         ))}
         {/* <ListItem>
@@ -264,6 +264,7 @@ function ResponsiveDrawer(props: Props) {
   );
 
   const container =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     window !== undefined ? () => window().document.body : undefined;
 
   return (

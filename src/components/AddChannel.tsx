@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddChannel = () => {
+const AddChannel = (): JSX.Element => {
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen] = useState(false);
   const classes = useStyles();
@@ -41,7 +41,7 @@ const AddChannel = () => {
 
   function handleKeyPress(e: React.KeyboardEvent) {
     if (e.keyCode === 13) {
-      addChannel(inputValue);
+      addChannel(inputValue).catch(console.log);
       setInputValue('');
     }
   }

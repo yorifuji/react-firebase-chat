@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig';
 const auth = getAuth(firebaseApp);
 
-function useIsOnline() {
+function useIsOnline(): boolean {
   const [isOnline, setIsOnline] = useState<boolean>(false);
 
   useEffect(() => {

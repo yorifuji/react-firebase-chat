@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -97,7 +97,7 @@ interface Props {
   window: any;
 }
 
-function ResponsiveDrawer(props: Props) {
+function ResponsiveDrawer(props: Props): JSX.Element {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();

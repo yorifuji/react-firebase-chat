@@ -88,7 +88,7 @@ const Channel = (): JSX.Element => {
             <Button
               variant='contained'
               color='primary'
-              onClick={(e) => handleSendMessage()}
+              onClick={() => handleSendMessage()}
             >
               Send
             </Button>

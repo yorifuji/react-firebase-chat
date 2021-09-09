@@ -11,6 +11,7 @@ import { firebaseApp } from '../firebaseConfig';
 import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Alert(props: any) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
@@ -54,6 +55,7 @@ const AddChannel = (): JSX.Element => {
     console.log('Document successfully written!');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClose = (event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
       return;

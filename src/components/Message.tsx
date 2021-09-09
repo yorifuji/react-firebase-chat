@@ -60,6 +60,7 @@ const Message = (props: Props): JSX.Element => {
   const user = useCurrentUser();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCardActionMeeting = (meeting: any) => {
     window.open(meeting.url, '_blank', 'noopener,noreferrer');
   };

@@ -108,8 +108,8 @@ function ResponsiveDrawer(props: Props): JSX.Element {
 
   const isOnline = useIsOnline();
   const channelList = useChannelList();
-  const location: any = useLocation();
-  const currentChannel = useCurrentChannel(location);
+  const location = useLocation();
+  const currentChannel = useCurrentChannel();
   const user = useCurrentUser();
   // console.log(user)
 

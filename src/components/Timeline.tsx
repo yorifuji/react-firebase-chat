@@ -2,12 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import Message from './Message';
 import { Box } from '@material-ui/core';
 import { firebaseApp } from '../firebaseConfig';
-import {
-  collectionGroup,
-  getFirestore,
-  orderBy,
-  QuerySnapshot,
-} from 'firebase/firestore';
+import { collectionGroup, getFirestore, orderBy, QuerySnapshot } from 'firebase/firestore';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
@@ -31,9 +26,7 @@ const Timeline = (props: Props) => {
         owner: data.owner,
         from: data.from,
         body: data.body,
-        createdAt: data['createdAt']
-          ? new Date(data.createdAt.seconds * 1000)
-          : new Date(),
+        createdAt: data['createdAt'] ? new Date(data.createdAt.seconds * 1000) : new Date(),
         metadata: data['metadata'] ? data.metadata : {},
       });
     });
@@ -41,10 +34,7 @@ const Timeline = (props: Props) => {
   };
 
   useEffect(() => {
-    const q = query(
-      collection(db, 'channels', channel, 'posts'),
-      orderBy('createdAt')
-    );
+    const q = query(collection(db, 'channels', channel, 'posts'), orderBy('createdAt'));
     const unsubscribe = onSnapshot(q, convertSnapshot);
     return () => unsubscribe();
   }, [channel]);
@@ -84,12 +74,7 @@ const Timeline = (props: Props) => {
   return (
     <Box>
       {timeline.map((message, index) => (
-        <Message
-          key={index}
-          channel={channel}
-          message={message}
-          reactions={getReactions(message.id)}
-        />
+        <Message key={index} channel={channel} message={message} reactions={getReactions(message.id)} />
       ))}
       <div ref={messagesEndRef} />
     </Box>

@@ -8,12 +8,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import useCurrentUser from '../hooks/useCurrentUser';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
 function Alert(props: any) {
@@ -33,9 +28,7 @@ const AddChannel = (): JSX.Element => {
   const classes = useStyles();
   const user = useCurrentUser();
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setInputValue(e.target.value);
   }
 
@@ -61,10 +54,7 @@ const AddChannel = (): JSX.Element => {
     console.log('Document successfully written!');
   };
 
-  const handleClose = (
-    event: React.SyntheticEvent<any, Event>,
-    reason: SnackbarCloseReason
-  ) => {
+  const handleClose = (event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -83,11 +73,7 @@ const AddChannel = (): JSX.Element => {
         onChange={handleInputChange}
         InputProps={{
           endAdornment: (
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={() => addChannel(inputValue)}
-            >
+            <Button variant='contained' color='primary' onClick={() => addChannel(inputValue)}>
               Add
             </Button>
           ),
@@ -99,9 +85,7 @@ const AddChannel = (): JSX.Element => {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Alert severity='success'>
-          You have successfully created a channel.
-        </Alert>
+        <Alert severity='success'>You have successfully created a channel.</Alert>
       </Snackbar>
     </Box>
   );

@@ -2,12 +2,7 @@ import React from 'react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
-import {
-  getAuth,
-  GoogleAuthProvider,
-  TwitterAuthProvider,
-  signInWithRedirect,
-} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig';
 import useCurrentUser from '../hooks/useCurrentUser';
 
@@ -69,11 +64,7 @@ const Profile = (): JSX.Element => {
             </Button>
           </p>
           <p>
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={deleteAccount}
-            >
+            <Button variant='contained' color='secondary' onClick={deleteAccount}>
               Unregist Account
             </Button>
           </p>
@@ -86,11 +77,7 @@ const Profile = (): JSX.Element => {
             </Button>
           </p>
           <p>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={signin_twitter}
-            >
+            <Button variant='contained' color='primary' onClick={signin_twitter}>
               Signin via Twitter
             </Button>
           </p>

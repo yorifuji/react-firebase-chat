@@ -8,12 +8,7 @@ import Timeline from './Timeline';
 import { Button, Box } from '@material-ui/core';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
@@ -42,9 +37,7 @@ const Channel = (): JSX.Element => {
     }
   }
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     // console.log(e)
     setInputValue(e.target.value);
   }
@@ -54,11 +47,7 @@ const Channel = (): JSX.Element => {
     setInputValue('');
   };
 
-  const sendMessage = async (
-    channel: string,
-    user: User | null,
-    message: string
-  ) => {
+  const sendMessage = async (channel: string, user: User | null, message: string) => {
     if (message.length === 0) return;
     if (user == null) return;
 
@@ -85,11 +74,7 @@ const Channel = (): JSX.Element => {
         onChange={(e) => handleInputChange(e)}
         InputProps={{
           endAdornment: (
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={() => handleSendMessage()}
-            >
+            <Button variant='contained' color='primary' onClick={() => handleSendMessage()}>
               Send
             </Button>
           ),

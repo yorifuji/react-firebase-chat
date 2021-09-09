@@ -7,9 +7,7 @@ function useIsOnline(): boolean {
   const [isOnline, setIsOnline] = useState<boolean>(false);
 
   useEffect(() => {
-    const unsbscribe = onAuthStateChanged(auth, (user) =>
-      setIsOnline(user ? true : false)
-    );
+    const unsbscribe = onAuthStateChanged(auth, (user) => setIsOnline(user ? true : false));
     return () => unsbscribe();
   });
 

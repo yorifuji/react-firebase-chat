@@ -41,14 +41,7 @@ import useCurrentChannel from '../hooks/useCurrentChannel';
 import useCurrentUser from '../hooks/useCurrentUser';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  doc,
-  deleteDoc,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
@@ -150,9 +143,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
 
   const isLocationChannel = () => {
     if (location.pathname.indexOf('/channel/') === 0) {
-      return location.pathname.substring('/channel/'.length).length > 0
-        ? true
-        : false;
+      return location.pathname.substring('/channel/'.length).length > 0 ? true : false;
     }
     return false;
   };
@@ -163,10 +154,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter(
-        (channel: Channel) =>
-          channel.id === channelID && channel.owner === user?.uid
-      );
+      const channel = channelList.filter((channel: Channel) => channel.id === channelID && channel.owner === user?.uid);
       // console.log(channel)
       if (channel.length > 0) return true;
     }
@@ -177,11 +165,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
     return location.pathname === channel;
   };
 
-  const sendJoinMeeting = async (
-    channel: string,
-    user: User,
-    message: string
-  ) => {
+  const sendJoinMeeting = async (channel: string, user: User, message: string) => {
     const post = {
       owner: user.uid,
       from: user.displayName,
@@ -189,9 +173,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
       createdAt: serverTimestamp(),
       metadata: {
         meeting: {
-          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${
-            new MediaStream().id
-          }`,
+          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${new MediaStream().id}`,
         },
       },
     };
@@ -217,12 +199,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
       {/* <div className={classes.toolbar} />
       <Divider /> */}
       <List>
-        <ListItem
-          button
-          component={Link}
-          to='/profile'
-          selected={isCurrentPath('/profile')}
-        >
+        <ListItem button component={Link} to='/profile' selected={isCurrentPath('/profile')}>
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>
@@ -234,9 +211,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
           </ListItemIcon>
           <ListItemText primary='Channel' />
           <ListItemSecondaryAction>
-            <IconButton onClick={() => history.push('/addChannel')}>
-              {isOnline && <AddIcon />}
-            </IconButton>
+            <IconButton onClick={() => history.push('/addChannel')}>{isOnline && <AddIcon />}</IconButton>
           </ListItemSecondaryAction>
         </ListItem>
         {channelList.map((channel: Channel) => (
@@ -263,9 +238,8 @@ function ResponsiveDrawer(props: Props): JSX.Element {
     </div>
   );
 
-  const container =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    window !== undefined ? () => window().document.body : undefined;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <div className={classes.root}>
@@ -293,22 +267,14 @@ function ResponsiveDrawer(props: Props): JSX.Element {
           </Typography>
           {isOnline && isLocationChannel() && (
             <Tooltip title='Video Chat' aria-label='Video Chat'>
-              <IconButton
-                aria-label='video chat'
-                color='inherit'
-                onClick={handleShowInviteMeeting}
-              >
+              <IconButton aria-label='video chat' color='inherit' onClick={handleShowInviteMeeting}>
                 <VideocamIcon />
               </IconButton>
             </Tooltip>
           )}
           {isOnline && isLocationChannel() && isOnwerChannel() && (
             <Tooltip title='Delete This Channel' aria-label='delete channel'>
-              <IconButton
-                aria-label='delete channel'
-                color='inherit'
-                onClick={handleClickOpenDeleteDialog}
-              >
+              <IconButton aria-label='delete channel' color='inherit' onClick={handleClickOpenDeleteDialog}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -363,32 +329,19 @@ function ResponsiveDrawer(props: Props): JSX.Element {
       >
         <DialogTitle id='alert-dialog-title'>Delete Channel</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Are you sure you want to delete this channel?
-          </DialogContentText>
+          <DialogContentText id='alert-dialog-description'>Are you sure you want to delete this channel?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClickCanelDeleteDialog}
-            variant='contained'
-            autoFocus
-          >
+          <Button onClick={handleClickCanelDeleteDialog} variant='contained' autoFocus>
             Cancel
           </Button>
-          <Button
-            onClick={handleClickOkDeleteDialog}
-            variant='contained'
-            color='secondary'
-          >
+          <Button onClick={handleClickOkDeleteDialog} variant='contained' color='secondary'>
             Delete
           </Button>
         </DialogActions>
       </Dialog>
       {openInviteDialog && (
-        <InviteMeetng
-          onCancel={() => handleInviteMeetingCancel()}
-          onOK={(message: string) => handleInviteMeetingOK(message)}
-        />
+        <InviteMeetng onCancel={() => handleInviteMeetingCancel()} onOK={(message: string) => handleInviteMeetingOK(message)} />
       )}
     </div>
   );

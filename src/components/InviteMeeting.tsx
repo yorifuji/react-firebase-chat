@@ -17,9 +17,7 @@ interface Props {
 const InviteMeeting = (props: Props) => {
   const [inputValue, setInputValue] = useState("Let's start meeting.");
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setInputValue(e.target.value);
   }
 
@@ -33,18 +31,10 @@ const InviteMeeting = (props: Props) => {
 
   return (
     <Box>
-      <Dialog
-        open={true}
-        onClose={handleCancel}
-        aria-labelledby='form-dialog-title'
-      >
-        <DialogTitle id='form-dialog-title'>
-          Send Meeting Invitation
-        </DialogTitle>
+      <Dialog open={true} onClose={handleCancel} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>Send Meeting Invitation</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Send a meeting invitation message to this channel.
-          </DialogContentText>
+          <DialogContentText>Send a meeting invitation message to this channel.</DialogContentText>
           <TextField
             defaultValue={inputValue}
             autoFocus

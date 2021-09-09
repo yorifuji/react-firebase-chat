@@ -91,6 +91,14 @@ const Message = (props: Props) => {
     );
   };
 
+  const firestore_remove_reaction = async (reaction: Reaction) => {
+    const ref = doc(
+      db,
+      `channels/${channel}/posts/${message.id}/reactions/${reaction.id}`
+    );
+    await deleteDoc(ref);
+  };
+
   const handleSelectEmoji = (emoji: EmojiData) => {
     setShowPicker(false);
     if (emoji.id === undefined) return;
@@ -105,25 +113,14 @@ const Message = (props: Props) => {
 
   const handleClickReaction = (reactions: ReactionUI) => {
     console.log(reactions);
-    const reactions_me = reactions.items.filter(
+    const myReactions = reactions.items.filter(
       (reaction) => reaction.uid === user?.uid
     );
-    console.log(reactions_me);
-    if (reactions_me.length) {
+    console.log(myReactions);
+    if (myReactions.length) {
       // remove
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      reactions_me.forEach(async (reaction) => {
-        await deleteDoc(
-          doc(
-            db,
-            'channels',
-            channel,
-            'posts',
-            message.id,
-            'reactions',
-            reaction.id
-          )
-        );
+      myReactions.forEach((reaction) => {
+        firestore_remove_reaction(reaction).catch(console.log);
       });
     } else {
       // add

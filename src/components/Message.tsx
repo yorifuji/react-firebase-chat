@@ -52,7 +52,7 @@ type Props = {
   reactions: Reaction[];
 };
 
-const Message = (props: Props) => {
+const Message = (props: Props): JSX.Element => {
   const { channel, message, reactions } = props;
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false);

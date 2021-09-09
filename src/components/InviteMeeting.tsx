@@ -14,7 +14,7 @@ interface Props {
   onCancel: () => void;
 }
 
-const InviteMeeting = (props: Props) => {
+const InviteMeeting = (props: Props): JSX.Element => {
   const [inputValue, setInputValue] = useState("Let's start meeting.");
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {

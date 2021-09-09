@@ -10,7 +10,7 @@ interface Props {
   channel: string;
 }
 
-const Timeline = (props: Props) => {
+const Timeline = (props: Props): JSX.Element => {
   const channel = props.channel;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [timeline, setTimeline] = useState<Message[]>([]);

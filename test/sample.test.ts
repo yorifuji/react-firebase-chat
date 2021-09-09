@@ -1,9 +1,4 @@
-import {
-  RulesTestEnvironment,
-  initializeTestEnvironment,
-  assertSucceeds,
-  assertFails,
-} from '@firebase/rules-unit-testing';
+import { RulesTestEnvironment, initializeTestEnvironment, assertSucceeds, assertFails } from '@firebase/rules-unit-testing';
 import { serverTimestamp } from 'firebase/firestore';
 import fs from 'fs';
 

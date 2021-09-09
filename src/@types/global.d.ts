@@ -20,3 +20,10 @@ interface ReactionUI {
   emoji: string;
   items: Reaction[];
 }
+
+interface Channel {
+  id: string;
+  owner: string;
+  name: string;
+  createdAt: number;
+}

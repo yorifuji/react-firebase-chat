@@ -2,12 +2,7 @@ import React from 'react';
 import { Grid, Box, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
-import {
-  getAuth,
-  GoogleAuthProvider,
-  TwitterAuthProvider,
-  signInWithRedirect,
-} from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { firebaseApp } from '../firebaseConfig';
 import useCurrentUser from '../hooks/useCurrentUser';
 
@@ -23,26 +18,24 @@ const auth = getAuth(firebaseApp);
 //   }
 // }));
 
-const Profile = () => {
+const Profile = (): JSX.Element => {
   const user = useCurrentUser();
   const history = useHistory();
 
   const signin_google = () => {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider).then(() => {
-      console.log('done');
-    });
+    signInWithRedirect(auth, provider).catch(console.log);
     history.push('/auth');
   };
 
   const signin_twitter = () => {
     const provider = new TwitterAuthProvider();
-    signInWithRedirect(auth, provider).then(() => {});
+    signInWithRedirect(auth, provider).catch(console.log);
     history.push('/auth');
   };
 
   const logout = () => {
-    auth.signOut();
+    auth.signOut().catch(console.log);
   };
 
   const deleteAccount = () => {
@@ -71,11 +64,7 @@ const Profile = () => {
             </Button>
           </p>
           <p>
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={deleteAccount}
-            >
+            <Button variant='contained' color='secondary' onClick={deleteAccount}>
               Unregist Account
             </Button>
           </p>
@@ -88,11 +77,7 @@ const Profile = () => {
             </Button>
           </p>
           <p>
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={signin_twitter}
-            >
+            <Button variant='contained' color='primary' onClick={signin_twitter}>
               Signin via Twitter
             </Button>
           </p>

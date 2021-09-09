@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import useIsOnline from './useIsOnline';
 
-function useCurrentChannel(location: Location) {
+function useCurrentChannel(): string | null {
+  const location = useLocation();
   const isOnline = useIsOnline();
   const [channel, setChannel] = useState<string | null>(null);
 

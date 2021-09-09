@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Drawer from '@material-ui/core/Drawer';
@@ -41,14 +41,7 @@ import useCurrentChannel from '../hooks/useCurrentChannel';
 import useCurrentUser from '../hooks/useCurrentUser';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  doc,
-  deleteDoc,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
@@ -94,10 +87,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   window: any;
 }
 
-function ResponsiveDrawer(props: Props) {
+function ResponsiveDrawer(props: Props): JSX.Element {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -108,8 +102,8 @@ function ResponsiveDrawer(props: Props) {
 
   const isOnline = useIsOnline();
   const channelList = useChannelList();
-  const location: any = useLocation();
-  const currentChannel = useCurrentChannel(location);
+  const location = useLocation();
+  const currentChannel = useCurrentChannel();
   const user = useCurrentUser();
   // console.log(user)
 
@@ -128,7 +122,7 @@ function ResponsiveDrawer(props: Props) {
   const handleInviteMeetingOK = (message: string) => {
     console.log(message);
     if (currentChannel && user && message) {
-      sendJoinMeeting(currentChannel, user, message);
+      sendJoinMeeting(currentChannel, user, message).catch(console.log);
       setOpenInvitedialog(false);
     }
   };
@@ -140,7 +134,7 @@ function ResponsiveDrawer(props: Props) {
   const handleClickOkDeleteDialog = () => {
     setOpenDeleteDialog(false);
     if (currentChannel) {
-      deleteChannel(currentChannel);
+      deleteChannel(currentChannel).catch(console.log);
     }
   };
 
@@ -150,9 +144,7 @@ function ResponsiveDrawer(props: Props) {
 
   const isLocationChannel = () => {
     if (location.pathname.indexOf('/channel/') === 0) {
-      return location.pathname.substring('/channel/'.length).length > 0
-        ? true
-        : false;
+      return location.pathname.substring('/channel/'.length).length > 0 ? true : false;
     }
     return false;
   };
@@ -163,10 +155,7 @@ function ResponsiveDrawer(props: Props) {
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter(
-        (channel: any) =>
-          channel.id === channelID && channel.owner === user?.uid
-      );
+      const channel = channelList.filter((channel: Channel) => channel.id === channelID && channel.owner === user?.uid);
       // console.log(channel)
       if (channel.length > 0) return true;
     }
@@ -177,11 +166,7 @@ function ResponsiveDrawer(props: Props) {
     return location.pathname === channel;
   };
 
-  const sendJoinMeeting = async (
-    channel: string,
-    user: User,
-    message: string
-  ) => {
+  const sendJoinMeeting = async (channel: string, user: User, message: string) => {
     const post = {
       owner: user.uid,
       from: user.displayName,
@@ -189,9 +174,7 @@ function ResponsiveDrawer(props: Props) {
       createdAt: serverTimestamp(),
       metadata: {
         meeting: {
-          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${
-            new MediaStream().id
-          }`,
+          url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${new MediaStream().id}`,
         },
       },
     };
@@ -204,7 +187,7 @@ function ResponsiveDrawer(props: Props) {
 
   const getChannelTitle = () => {
     let title = 'Channel';
-    channelList.forEach((channel: any) => {
+    channelList.forEach((channel: Channel) => {
       if (channel.id === currentChannel) title = `#${channel.name}`;
     });
     return title;
@@ -217,12 +200,7 @@ function ResponsiveDrawer(props: Props) {
       {/* <div className={classes.toolbar} />
       <Divider /> */}
       <List>
-        <ListItem
-          button
-          component={Link}
-          to='/profile'
-          selected={isCurrentPath('/profile')}
-        >
+        <ListItem button component={Link} to='/profile' selected={isCurrentPath('/profile')}>
           <ListItemIcon>
             <AccountCircleIcon />
           </ListItemIcon>
@@ -234,21 +212,19 @@ function ResponsiveDrawer(props: Props) {
           </ListItemIcon>
           <ListItemText primary='Channel' />
           <ListItemSecondaryAction>
-            <IconButton onClick={() => history.push('/addChannel')}>
-              {isOnline && <AddIcon />}
-            </IconButton>
+            <IconButton onClick={() => history.push('/addChannel')}>{isOnline && <AddIcon />}</IconButton>
           </ListItemSecondaryAction>
         </ListItem>
-        {channelList.map((channel: any) => (
+        {channelList.map((channel: Channel) => (
           <ListItem
             button
             key={channel.id}
             className={classes.nested}
             component={Link}
-            to={'/channel/' + channel.id}
-            selected={isCurrentPath('/channel/' + channel.id)}
+            to={`/channel/${channel.id}`}
+            selected={isCurrentPath(`/channel/${channel.id}`)}
           >
-            <ListItemText primary={'# ' + channel.name} />
+            <ListItemText primary={`# ${channel.name}`} />
           </ListItem>
         ))}
         {/* <ListItem>
@@ -264,6 +240,7 @@ function ResponsiveDrawer(props: Props) {
   );
 
   const container =
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     window !== undefined ? () => window().document.body : undefined;
 
   return (
@@ -292,22 +269,14 @@ function ResponsiveDrawer(props: Props) {
           </Typography>
           {isOnline && isLocationChannel() && (
             <Tooltip title='Video Chat' aria-label='Video Chat'>
-              <IconButton
-                aria-label='video chat'
-                color='inherit'
-                onClick={handleShowInviteMeeting}
-              >
+              <IconButton aria-label='video chat' color='inherit' onClick={handleShowInviteMeeting}>
                 <VideocamIcon />
               </IconButton>
             </Tooltip>
           )}
           {isOnline && isLocationChannel() && isOnwerChannel() && (
             <Tooltip title='Delete This Channel' aria-label='delete channel'>
-              <IconButton
-                aria-label='delete channel'
-                color='inherit'
-                onClick={handleClickOpenDeleteDialog}
-              >
+              <IconButton aria-label='delete channel' color='inherit' onClick={handleClickOpenDeleteDialog}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
@@ -362,32 +331,19 @@ function ResponsiveDrawer(props: Props) {
       >
         <DialogTitle id='alert-dialog-title'>Delete Channel</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Are you sure you want to delete this channel?
-          </DialogContentText>
+          <DialogContentText id='alert-dialog-description'>Are you sure you want to delete this channel?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClickCanelDeleteDialog}
-            variant='contained'
-            autoFocus
-          >
+          <Button onClick={handleClickCanelDeleteDialog} variant='contained' autoFocus>
             Cancel
           </Button>
-          <Button
-            onClick={handleClickOkDeleteDialog}
-            variant='contained'
-            color='secondary'
-          >
+          <Button onClick={handleClickOkDeleteDialog} variant='contained' color='secondary'>
             Delete
           </Button>
         </DialogActions>
       </Dialog>
       {openInviteDialog && (
-        <InviteMeetng
-          onCancel={() => handleInviteMeetingCancel()}
-          onOK={(message: string) => handleInviteMeetingOK(message)}
-        />
+        <InviteMeetng onCancel={() => handleInviteMeetingCancel()} onOK={(message: string) => handleInviteMeetingOK(message)} />
       )}
     </div>
   );

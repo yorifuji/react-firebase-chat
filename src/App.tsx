@@ -6,7 +6,7 @@ import blue from '@material-ui/core/colors/blue';
 import ResponsiveDrawer from './components/ResponsiveDrawer';
 import { BrowserRouter } from 'react-router-dom';
 
-function App() {
+function App(): JSX.Element {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   const theme = React.useMemo(

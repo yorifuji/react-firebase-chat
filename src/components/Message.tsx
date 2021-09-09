@@ -28,14 +28,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  doc,
-  deleteDoc,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
 const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles(() => ({
@@ -59,16 +52,15 @@ type Props = {
   reactions: Reaction[];
 };
 
-const Message = (props: Props) => {
+const Message = (props: Props): JSX.Element => {
   const { channel, message, reactions } = props;
   const classes = useStyles();
   const [showPicker, setShowPicker] = useState(false);
-  const [summarizedReaction, setSummarizedReaction] = useState<ReactionUI[]>(
-    []
-  );
+  const [summarizedReaction, setSummarizedReaction] = useState<ReactionUI[]>([]);
   const user = useCurrentUser();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCardActionMeeting = (meeting: any) => {
     window.open(meeting.url, '_blank', 'noopener,noreferrer');
   };
@@ -85,48 +77,33 @@ const Message = (props: Props) => {
       emoji: emoji,
       createdAt: serverTimestamp(),
     };
-    await addDoc(
-      collection(db, 'channels', channel, 'posts', message.id, 'reactions'),
-      data
-    );
+    await addDoc(collection(db, 'channels', channel, 'posts', message.id, 'reactions'), data);
+  };
+
+  const firestore_remove_reaction = async (reaction: Reaction) => {
+    const ref = doc(db, `channels/${channel}/posts/${message.id}/reactions/${reaction.id}`);
+    await deleteDoc(ref);
   };
 
   const handleSelectEmoji = (emoji: EmojiData) => {
     setShowPicker(false);
     if (emoji.id === undefined) return;
-    if (
-      reactions.some(
-        (reaction) => reaction.emoji === emoji.id && reaction.uid === user?.uid
-      )
-    )
-      return;
-    firestore_add_reaction(emoji.id);
+    if (reactions.some((reaction) => reaction.emoji === emoji.id && reaction.uid === user?.uid)) return;
+    firestore_add_reaction(emoji.id).catch(console.log);
   };
 
   const handleClickReaction = (reactions: ReactionUI) => {
     console.log(reactions);
-    const reactions_me = reactions.items.filter(
-      (reaction) => reaction.uid === user?.uid
-    );
-    console.log(reactions_me);
-    if (reactions_me.length) {
+    const myReactions = reactions.items.filter((reaction) => reaction.uid === user?.uid);
+    console.log(myReactions);
+    if (myReactions.length) {
       // remove
-      reactions_me.forEach(async (reaction) => {
-        await deleteDoc(
-          doc(
-            db,
-            'channels',
-            channel,
-            'posts',
-            message.id,
-            'reactions',
-            reaction.id
-          )
-        );
+      myReactions.forEach((reaction) => {
+        firestore_remove_reaction(reaction).catch(console.log);
       });
     } else {
       // add
-      firestore_add_reaction(reactions.emoji);
+      firestore_add_reaction(reactions.emoji).catch(console.log);
     }
   };
 
@@ -160,11 +137,7 @@ const Message = (props: Props) => {
   }, [reactions]);
 
   const toLocaleString = (date: Date) => {
-    return (
-      [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/') +
-      ' ' +
-      date.toLocaleTimeString()
-    );
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/') + ' ' + date.toLocaleTimeString();
   };
 
   return (
@@ -245,23 +218,13 @@ const Message = (props: Props) => {
       >
         <DialogTitle id='alert-dialog-title'>Delete Message</DialogTitle>
         <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            Are you sure you want to delete this message?
-          </DialogContentText>
+          <DialogContentText id='alert-dialog-description'>Are you sure you want to delete this message?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleClickCanelDeleteDialog}
-            variant='contained'
-            autoFocus
-          >
+          <Button onClick={handleClickCanelDeleteDialog} variant='contained' autoFocus>
             Cancel
           </Button>
-          <Button
-            onClick={handleClickOkDeleteDialog}
-            variant='contained'
-            color='secondary'
-          >
+          <Button onClick={handleClickOkDeleteDialog} variant='contained' color='secondary'>
             Delete
           </Button>
         </DialogActions>

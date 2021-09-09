@@ -8,12 +8,8 @@ import Timeline from './Timeline';
 import { Button, Box } from '@material-ui/core';
 
 import { firebaseApp } from '../firebaseConfig';
-import {
-  getFirestore,
-  addDoc,
-  collection,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { User } from 'firebase/auth';
 const db = getFirestore(firebaseApp);
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +22,7 @@ interface ParamTypes {
   channel: string;
 }
 
-const Channel = () => {
+const Channel = (): JSX.Element => {
   const { channel } = useParams<ParamTypes>();
   // console.log(channel)
 
@@ -36,27 +32,24 @@ const Channel = () => {
 
   function handleKeyPress(e: React.KeyboardEvent) {
     if (e.keyCode === 13) {
-      sendMessage(channel, user, inputValue);
+      sendMessage(channel, user, inputValue).catch(console.log);
       setInputValue('');
     }
   }
 
-  function handleInputChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     // console.log(e)
     setInputValue(e.target.value);
   }
 
-  const handleSendMessage = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    sendMessage(channel, user, inputValue);
+  const handleSendMessage = () => {
+    sendMessage(channel, user, inputValue).catch(console.log);
     setInputValue('');
   };
 
-  const sendMessage = async (channel: string, user: any, message: string) => {
+  const sendMessage = async (channel: string, user: User | null, message: string) => {
     if (message.length === 0) return;
+    if (user == null) return;
 
     const post = {
       owner: user.uid,
@@ -81,11 +74,7 @@ const Channel = () => {
         onChange={(e) => handleInputChange(e)}
         InputProps={{
           endAdornment: (
-            <Button
-              variant='contained'
-              color='primary'
-              onClick={(e) => handleSendMessage(e)}
-            >
+            <Button variant='contained' color='primary' onClick={() => handleSendMessage()}>
               Send
             </Button>
           ),

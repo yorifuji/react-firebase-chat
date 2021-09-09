@@ -52,7 +52,7 @@ const Timeline = (props: Props) => {
   useEffect(() => {
     const q = query(collectionGroup(db, 'reactions'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const reactions: Reaction[] = [];
+      const reactions: Array<Reaction> = [];
       querySnapshot.forEach((doc) => {
         reactions.push({
           id: doc.id,

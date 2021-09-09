@@ -111,35 +111,27 @@ describe('削除', () => {
       createdAt: serverTimestamp(),
       metadata: {},
     });
-    await firestore
-      .doc('/channels/channel/posts/post/reactions/reaction1')
-      .set({
-        uid: 'alice',
-        channel: 'channel',
-        post: 'postID',
-        emoji: 'emoji1',
-        createdAt: serverTimestamp(),
-      });
+    await firestore.doc('/channels/channel/posts/post/reactions/reaction1').set({
+      uid: 'alice',
+      channel: 'channel',
+      post: 'postID',
+      emoji: 'emoji1',
+      createdAt: serverTimestamp(),
+    });
   });
 
   test('成功', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore();
-    await testing.assertSucceeds(
-      firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete()
-    );
+    await testing.assertSucceeds(firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete());
   });
 
   test('失敗（未認証）', async () => {
     const firestore = testEnv.unauthenticatedContext().firestore();
-    await testing.assertFails(
-      firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete()
-    );
+    await testing.assertFails(firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete());
   });
 
   test('失敗（owner != request.auth.uid)', async () => {
     const firestore = testEnv.authenticatedContext('bob').firestore();
-    await testing.assertFails(
-      firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete()
-    );
+    await testing.assertFails(firestore.doc('/channels/channel/posts/post/reactions/reaction1').delete());
   });
 });

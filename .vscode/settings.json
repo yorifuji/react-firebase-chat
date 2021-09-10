@@ -25,5 +25,7 @@
   "npm.packageManager": "yarn",
   "prettier.jsxSingleQuote": true,
   "prettier.singleQuote": true,
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "prettier.semi": false,
+  "prettier.printWidth": 128
 }

@@ -1,12 +1,12 @@
-import React from 'react';
-import { Grid, Box, Button } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import React from 'react'
+import { Grid, Box, Button } from '@material-ui/core'
+import { useHistory } from 'react-router-dom'
 
-import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithRedirect } from 'firebase/auth';
-import { firebaseApp } from '../firebaseConfig';
-import useCurrentUser from '../hooks/useCurrentUser';
+import { getAuth, GoogleAuthProvider, TwitterAuthProvider, signInWithRedirect } from 'firebase/auth'
+import { firebaseApp } from '../firebaseConfig'
+import useCurrentUser from '../hooks/useCurrentUser'
 
-const auth = getAuth(firebaseApp);
+const auth = getAuth(firebaseApp)
 
 // import { makeStyles } from '@material-ui/core/styles';
 // import { orange } from '@material-ui/core/colors';
@@ -19,28 +19,28 @@ const auth = getAuth(firebaseApp);
 // }));
 
 const Profile = (): JSX.Element => {
-  const user = useCurrentUser();
-  const history = useHistory();
+  const user = useCurrentUser()
+  const history = useHistory()
 
   const signin_google = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider).catch(console.log);
-    history.push('/auth');
-  };
+    const provider = new GoogleAuthProvider()
+    signInWithRedirect(auth, provider).catch(console.log)
+    history.push('/auth')
+  }
 
   const signin_twitter = () => {
-    const provider = new TwitterAuthProvider();
-    signInWithRedirect(auth, provider).catch(console.log);
-    history.push('/auth');
-  };
+    const provider = new TwitterAuthProvider()
+    signInWithRedirect(auth, provider).catch(console.log)
+    history.push('/auth')
+  }
 
   const logout = () => {
-    auth.signOut().catch(console.log);
-  };
+    auth.signOut().catch(console.log)
+  }
 
   const deleteAccount = () => {
-    auth.currentUser?.delete().then().catch(console.log);
-  };
+    auth.currentUser?.delete().then().catch(console.log)
+  }
 
   return (
     <Grid container alignItems='center' justifyContent='center'>
@@ -84,7 +84,7 @@ const Profile = (): JSX.Element => {
         </Box>
       )}
     </Grid>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

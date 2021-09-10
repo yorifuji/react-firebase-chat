@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
 
-import { Button, Snackbar, Box, SnackbarCloseReason } from '@material-ui/core';
+import { Button, Snackbar, Box, SnackbarCloseReason } from '@material-ui/core'
 
-import MuiAlert from '@material-ui/lab/Alert';
-import useCurrentUser from '../hooks/useCurrentUser';
+import MuiAlert from '@material-ui/lab/Alert'
+import useCurrentUser from '../hooks/useCurrentUser'
 
-import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-const db = getFirestore(firebaseApp);
+import { firebaseApp } from '../firebaseConfig'
+import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore'
+const db = getFirestore(firebaseApp)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function Alert(props: any) {
-  return <MuiAlert elevation={6} variant='filled' {...props} />;
+  return <MuiAlert elevation={6} variant='filled' {...props} />
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,47 +21,47 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     flexGrow: 1,
   },
-}));
+}))
 
 const AddChannel = (): JSX.Element => {
-  const [inputValue, setInputValue] = useState('');
-  const [open, setOpen] = useState(false);
-  const classes = useStyles();
-  const user = useCurrentUser();
+  const [inputValue, setInputValue] = useState('')
+  const [open, setOpen] = useState(false)
+  const classes = useStyles()
+  const user = useCurrentUser()
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setInputValue(e.target.value);
+    setInputValue(e.target.value)
   }
 
   function handleKeyPress(e: React.KeyboardEvent) {
     if (e.keyCode === 13) {
-      addChannel(inputValue).catch(console.log);
-      setInputValue('');
+      addChannel(inputValue).catch(console.log)
+      setInputValue('')
     }
   }
 
   const addChannel = async (channel: string) => {
-    if (channel.length === 0) return;
+    if (channel.length === 0) return
 
     const newChannel = {
       owner: user?.uid,
       name: channel,
       createdAt: serverTimestamp(),
-    };
-    await addDoc(collection(db, 'channels'), newChannel);
+    }
+    await addDoc(collection(db, 'channels'), newChannel)
 
-    setInputValue('');
-    setOpen(true);
-    console.log('Document successfully written!');
-  };
+    setInputValue('')
+    setOpen(true)
+    console.log('Document successfully written!')
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClose = (event: React.SyntheticEvent<any, Event>, reason: SnackbarCloseReason) => {
     if (reason === 'clickaway') {
-      return;
+      return
     }
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   return (
     <Box>
@@ -90,7 +90,7 @@ const AddChannel = (): JSX.Element => {
         <Alert severity='success'>You have successfully created a channel.</Alert>
       </Snackbar>
     </Box>
-  );
-};
+  )
+}
 
-export default AddChannel;
+export default AddChannel

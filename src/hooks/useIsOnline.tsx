@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { firebaseApp } from '../firebaseConfig';
-const auth = getAuth(firebaseApp);
+import { useState, useEffect } from 'react'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { firebaseApp } from '../firebaseConfig'
+const auth = getAuth(firebaseApp)
 
 function useIsOnline(): boolean {
-  const [isOnline, setIsOnline] = useState<boolean>(false);
+  const [isOnline, setIsOnline] = useState<boolean>(false)
 
   useEffect(() => {
-    const unsbscribe = onAuthStateChanged(auth, (user) => setIsOnline(user ? true : false));
-    return () => unsbscribe();
-  });
+    const unsbscribe = onAuthStateChanged(auth, (user) => setIsOnline(user ? true : false))
+    return () => unsbscribe()
+  })
 
-  return isOnline;
+  return isOnline
 }
 
-export default useIsOnline;
+export default useIsOnline

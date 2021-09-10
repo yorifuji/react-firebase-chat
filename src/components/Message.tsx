@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
-import { orange } from '@material-ui/core/colors';
+import React, { useEffect, useState } from 'react'
+import Card from '@material-ui/core/Card'
+import CardHeader from '@material-ui/core/CardHeader'
+import CardContent from '@material-ui/core/CardContent'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Avatar from '@material-ui/core/Avatar'
+import { orange } from '@material-ui/core/colors'
 import {
   CardActions,
   Button,
@@ -17,19 +17,19 @@ import {
   DialogContentText,
   DialogActions,
   Box,
-} from '@material-ui/core';
-import { Emoji, EmojiData } from 'emoji-mart';
-import 'emoji-mart/css/emoji-mart.css';
-import './Message.css';
-import useCurrentUser from '../hooks/useCurrentUser';
-import 'emoji-mart/css/emoji-mart.css';
-import { Picker } from 'emoji-mart';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+} from '@material-ui/core'
+import { Emoji, EmojiData } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
+import './Message.css'
+import useCurrentUser from '../hooks/useCurrentUser'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+import IconButton from '@material-ui/core/IconButton'
+import DeleteIcon from '@material-ui/icons/Delete'
 
-import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-const db = getFirestore(firebaseApp);
+import { firebaseApp } from '../firebaseConfig'
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore'
+const db = getFirestore(firebaseApp)
 
 const useStyles = makeStyles(() => ({
   avatar: {
@@ -44,30 +44,30 @@ const useStyles = makeStyles(() => ({
   labelSmall: {
     paddingLeft: 4,
   },
-}));
+}))
 
 type Props = {
-  channel: string;
-  message: Message;
-  reactions: Reaction[];
-};
+  channel: string
+  message: Message
+  reactions: Reaction[]
+}
 
 const Message = (props: Props): JSX.Element => {
-  const { channel, message, reactions } = props;
-  const classes = useStyles();
-  const [showPicker, setShowPicker] = useState(false);
-  const [summarizedReaction, setSummarizedReaction] = useState<ReactionUI[]>([]);
-  const user = useCurrentUser();
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const { channel, message, reactions } = props
+  const classes = useStyles()
+  const [showPicker, setShowPicker] = useState(false)
+  const [summarizedReaction, setSummarizedReaction] = useState<ReactionUI[]>([])
+  const user = useCurrentUser()
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCardActionMeeting = (meeting: any) => {
-    window.open(meeting.url, '_blank', 'noopener,noreferrer');
-  };
+    window.open(meeting.url, '_blank', 'noopener,noreferrer')
+  }
 
   const handleClickNewChip = () => {
-    setShowPicker(!showPicker);
-  };
+    setShowPicker(!showPicker)
+  }
 
   const firestore_add_reaction = async (emoji: string) => {
     const data = {
@@ -76,69 +76,69 @@ const Message = (props: Props): JSX.Element => {
       post: message.id,
       emoji: emoji,
       createdAt: serverTimestamp(),
-    };
-    await addDoc(collection(db, 'channels', channel, 'posts', message.id, 'reactions'), data);
-  };
+    }
+    await addDoc(collection(db, 'channels', channel, 'posts', message.id, 'reactions'), data)
+  }
 
   const firestore_remove_reaction = async (reaction: Reaction) => {
-    const ref = doc(db, `channels/${channel}/posts/${message.id}/reactions/${reaction.id}`);
-    await deleteDoc(ref);
-  };
+    const ref = doc(db, `channels/${channel}/posts/${message.id}/reactions/${reaction.id}`)
+    await deleteDoc(ref)
+  }
 
   const handleSelectEmoji = (emoji: EmojiData) => {
-    setShowPicker(false);
-    if (emoji.id === undefined) return;
-    if (reactions.some((reaction) => reaction.emoji === emoji.id && reaction.uid === user?.uid)) return;
-    firestore_add_reaction(emoji.id).catch(console.log);
-  };
+    setShowPicker(false)
+    if (emoji.id === undefined) return
+    if (reactions.some((reaction) => reaction.emoji === emoji.id && reaction.uid === user?.uid)) return
+    firestore_add_reaction(emoji.id).catch(console.log)
+  }
 
   const handleClickReaction = (reactions: ReactionUI) => {
-    console.log(reactions);
-    const myReactions = reactions.items.filter((reaction) => reaction.uid === user?.uid);
-    console.log(myReactions);
+    console.log(reactions)
+    const myReactions = reactions.items.filter((reaction) => reaction.uid === user?.uid)
+    console.log(myReactions)
     if (myReactions.length) {
       // remove
       myReactions.forEach((reaction) => {
-        firestore_remove_reaction(reaction).catch(console.log);
-      });
+        firestore_remove_reaction(reaction).catch(console.log)
+      })
     } else {
       // add
-      firestore_add_reaction(reactions.emoji).catch(console.log);
+      firestore_add_reaction(reactions.emoji).catch(console.log)
     }
-  };
+  }
 
   const handleClickDelete = () => {
-    setOpenDeleteDialog(true);
-  };
+    setOpenDeleteDialog(true)
+  }
 
   const handleClickCanelDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
+    setOpenDeleteDialog(false)
+  }
 
   const handleClickOkDeleteDialog = async () => {
-    await deleteDoc(doc(db, 'channels', channel, 'posts', message.id));
-    setOpenDeleteDialog(false);
-  };
+    await deleteDoc(doc(db, 'channels', channel, 'posts', message.id))
+    setOpenDeleteDialog(false)
+  }
 
   useEffect(() => {
-    const summarize: ReactionUI[] = [];
+    const summarize: ReactionUI[] = []
     reactions.forEach((reaction) => {
-      const exists = summarize.find((s) => s.emoji === reaction.emoji);
+      const exists = summarize.find((s) => s.emoji === reaction.emoji)
       if (exists) {
-        exists.items.push(reaction);
+        exists.items.push(reaction)
       } else {
         summarize.push({
           emoji: reaction.emoji,
           items: [reaction],
-        });
+        })
       }
-    });
-    setSummarizedReaction(summarize);
-  }, [reactions]);
+    })
+    setSummarizedReaction(summarize)
+  }, [reactions])
 
   const toLocaleString = (date: Date) => {
-    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/') + ' ' + date.toLocaleTimeString();
-  };
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('/') + ' ' + date.toLocaleTimeString()
+  }
 
   return (
     <Box>
@@ -171,7 +171,7 @@ const Message = (props: Props): JSX.Element => {
                 size='small'
                 color='primary'
                 onClick={() => {
-                  handleCardActionMeeting(message.metadata.meeting);
+                  handleCardActionMeeting(message.metadata.meeting)
                 }}
               >
                 JOIN
@@ -230,7 +230,7 @@ const Message = (props: Props): JSX.Element => {
         </DialogActions>
       </Dialog>
     </Box>
-  );
-};
+  )
+}
 
-export default Message;
+export default Message

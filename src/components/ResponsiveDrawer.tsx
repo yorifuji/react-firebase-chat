@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuIcon from '@material-ui/icons/Menu';
-import VideocamIcon from '@material-ui/icons/Videocam';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Route, Link, useLocation, useHistory } from 'react-router-dom';
+import { useState } from 'react'
+import PropTypes from 'prop-types'
+import AppBar from '@material-ui/core/AppBar'
+import Drawer from '@material-ui/core/Drawer'
+import Hidden from '@material-ui/core/Hidden'
+import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import MenuIcon from '@material-ui/icons/Menu'
+import VideocamIcon from '@material-ui/icons/Videocam'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { Route, Link, useLocation, useHistory } from 'react-router-dom'
 import {
   Tooltip,
   ListItemSecondaryAction,
@@ -23,29 +23,29 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import ChatIcon from '@material-ui/icons/Chat';
-import DeleteIcon from '@material-ui/icons/Delete';
+} from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import ChatIcon from '@material-ui/icons/Chat'
+import DeleteIcon from '@material-ui/icons/Delete'
 
-import Channel from './Channel';
-import Profile from './Profile';
-import AddChannel from './AddChannel';
-import AuthLoading from './AuthLoading';
-import InviteMeetng from './InviteMeeting';
+import Channel from './Channel'
+import Profile from './Profile'
+import AddChannel from './AddChannel'
+import AuthLoading from './AuthLoading'
+import InviteMeetng from './InviteMeeting'
 
-import useIsOnline from '../hooks/useIsOnline';
-import useChannelList from '../hooks/useChannelList';
-import useCurrentChannel from '../hooks/useCurrentChannel';
-import useCurrentUser from '../hooks/useCurrentUser';
+import useIsOnline from '../hooks/useIsOnline'
+import useChannelList from '../hooks/useChannelList'
+import useCurrentChannel from '../hooks/useCurrentChannel'
+import useCurrentUser from '../hooks/useCurrentUser'
 
-import { firebaseApp } from '../firebaseConfig';
-import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { User } from 'firebase/auth';
-const db = getFirestore(firebaseApp);
+import { firebaseApp } from '../firebaseConfig'
+import { getFirestore, doc, deleteDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { User } from 'firebase/auth'
+const db = getFirestore(firebaseApp)
 
-const drawerWidth = 240;
+const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,87 +84,87 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-}));
+}))
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  window: any;
+  window: any
 }
 
 function ResponsiveDrawer(props: Props): JSX.Element {
-  const { window } = props;
-  const classes = useStyles();
-  const theme = useTheme();
-  const history = useHistory();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [oepnDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openInviteDialog, setOpenInvitedialog] = useState(false);
+  const { window } = props
+  const classes = useStyles()
+  const theme = useTheme()
+  const history = useHistory()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [oepnDeleteDialog, setOpenDeleteDialog] = useState(false)
+  const [openInviteDialog, setOpenInvitedialog] = useState(false)
 
-  const isOnline = useIsOnline();
-  const channelList = useChannelList();
-  const location = useLocation();
-  const currentChannel = useCurrentChannel();
-  const user = useCurrentUser();
+  const isOnline = useIsOnline()
+  const channelList = useChannelList()
+  const location = useLocation()
+  const currentChannel = useCurrentChannel()
+  const user = useCurrentUser()
   // console.log(user)
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    setMobileOpen(!mobileOpen)
+  }
 
   const handleShowInviteMeeting = () => {
-    setOpenInvitedialog(true);
-  };
+    setOpenInvitedialog(true)
+  }
 
   const handleInviteMeetingCancel = () => {
-    setOpenInvitedialog(false);
-  };
+    setOpenInvitedialog(false)
+  }
 
   const handleInviteMeetingOK = (message: string) => {
-    console.log(message);
+    console.log(message)
     if (currentChannel && user && message) {
-      sendJoinMeeting(currentChannel, user, message).catch(console.log);
-      setOpenInvitedialog(false);
+      sendJoinMeeting(currentChannel, user, message).catch(console.log)
+      setOpenInvitedialog(false)
     }
-  };
+  }
 
   const handleClickOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true);
-  };
+    setOpenDeleteDialog(true)
+  }
 
   const handleClickOkDeleteDialog = () => {
-    setOpenDeleteDialog(false);
+    setOpenDeleteDialog(false)
     if (currentChannel) {
-      deleteChannel(currentChannel).catch(console.log);
+      deleteChannel(currentChannel).catch(console.log)
     }
-  };
+  }
 
   const handleClickCanelDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-  };
+    setOpenDeleteDialog(false)
+  }
 
   const isLocationChannel = () => {
     if (location.pathname.indexOf('/channel/') === 0) {
-      return location.pathname.substring('/channel/'.length).length > 0 ? true : false;
+      return location.pathname.substring('/channel/'.length).length > 0 ? true : false
     }
-    return false;
-  };
+    return false
+  }
 
   const isOnwerChannel = () => {
     if (location.pathname.indexOf('/channel/') === 0) {
-      const channelID = location.pathname.substring('/channel/'.length);
+      const channelID = location.pathname.substring('/channel/'.length)
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter((channel: Channel) => channel.id === channelID && channel.owner === user?.uid);
+      const channel = channelList.filter((channel: Channel) => channel.id === channelID && channel.owner === user?.uid)
       // console.log(channel)
-      if (channel.length > 0) return true;
+      if (channel.length > 0) return true
     }
-    return false;
-  };
+    return false
+  }
 
   const isCurrentPath = (channel: string) => {
-    return location.pathname === channel;
-  };
+    return location.pathname === channel
+  }
 
   const sendJoinMeeting = async (channel: string, user: User, message: string) => {
     const post = {
@@ -177,21 +177,21 @@ function ResponsiveDrawer(props: Props): JSX.Element {
           url: `https://yorifuji.github.io/seaside/?welcomeDialog=false#mesh-${new MediaStream().id}`,
         },
       },
-    };
-    await addDoc(collection(db, 'channels', channel, 'posts'), post);
-  };
+    }
+    await addDoc(collection(db, 'channels', channel, 'posts'), post)
+  }
 
   const deleteChannel = async (id: string) => {
-    await deleteDoc(doc(db, 'channels', id));
-  };
+    await deleteDoc(doc(db, 'channels', id))
+  }
 
   const getChannelTitle = () => {
-    let title = 'Channel';
+    let title = 'Channel'
     channelList.forEach((channel: Channel) => {
-      if (channel.id === currentChannel) title = `#${channel.name}`;
-    });
-    return title;
-  };
+      if (channel.id === currentChannel) title = `#${channel.name}`
+    })
+    return title
+  }
 
   // const users = ["yorifuji", "foo", "bar"]
 
@@ -237,11 +237,11 @@ function ResponsiveDrawer(props: Props): JSX.Element {
         ))} */}
       </List>
     </div>
-  );
+  )
 
   const container =
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    window !== undefined ? () => window().document.body : undefined;
+    window !== undefined ? () => window().document.body : undefined
 
   return (
     <div className={classes.root}>
@@ -346,7 +346,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
         <InviteMeetng onCancel={() => handleInviteMeetingCancel()} onOK={(message: string) => handleInviteMeetingOK(message)} />
       )}
     </div>
-  );
+  )
 }
 
 ResponsiveDrawer.propTypes = {
@@ -355,10 +355,10 @@ ResponsiveDrawer.propTypes = {
    * You won't need it on your project.
    */
   window: PropTypes.func,
-};
+}
 
-export default ResponsiveDrawer;
+export default ResponsiveDrawer
 
 const Index = () => {
-  return <div></div>;
-};
+  return <div></div>
+}

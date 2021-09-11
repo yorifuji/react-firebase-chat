@@ -3,11 +3,14 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:jest/recommended",
     "prettier"
   ],
   "plugins": [
     "react-app",
-    "@typescript-eslint"
+    "react-app/jest",
+    "@typescript-eslint",
+    "jest"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

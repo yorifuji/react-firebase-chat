@@ -25,5 +25,10 @@
     "@typescript-eslint/no-unsafe-call": "off",
     "react/react-in-jsx-scope": "off",
     "jest/expect-expect": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

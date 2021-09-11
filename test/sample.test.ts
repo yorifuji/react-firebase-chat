@@ -2,7 +2,7 @@ import { RulesTestEnvironment, initializeTestEnvironment, assertSucceeds, assert
 import { serverTimestamp } from 'firebase/firestore'
 import fs from 'fs'
 
-let testEnv: RulesTestEnvironment | null
+let testEnv: RulesTestEnvironment
 
 beforeAll(async () => {
   testEnv = await initializeTestEnvironment({
@@ -15,14 +15,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await testEnv.cleanup()
-  testEnv = null
 })
 
 beforeEach(async () => {
   await testEnv.clearFirestore()
 })
-
-afterEach(async () => {})
 
 describe('this is test', () => {
   test('pass test', async () => {

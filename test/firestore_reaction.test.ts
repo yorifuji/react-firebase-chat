@@ -2,7 +2,7 @@ import * as testing from '@firebase/rules-unit-testing'
 import { serverTimestamp } from 'firebase/firestore'
 import fs from 'fs'
 
-let testEnv: testing.RulesTestEnvironment | null
+let testEnv: testing.RulesTestEnvironment
 
 beforeAll(async () => {
   testEnv = await testing.initializeTestEnvironment({
@@ -15,13 +15,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await testEnv.cleanup()
-  testEnv = null
 })
 
 beforeEach(async () => {
   await testEnv.clearFirestore()
 })
-afterEach(async () => {})
 
 describe('作成', () => {
   beforeEach(async () => {

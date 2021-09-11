@@ -164,7 +164,7 @@ const Message = (props: Props): JSX.Element => {
               {message.body}
             </Typography>
           </CardContent>
-          {message.metadata != null && (
+          {message.metadata?.meeting && (
             <CardActions>
               <Button
                 size='small'

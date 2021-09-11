@@ -60,9 +60,8 @@ const Message = (props: Props): JSX.Element => {
   const user = useCurrentUser()
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleCardActionMeeting = (meeting: any) => {
-    window.open(meeting.url, '_blank', 'noopener,noreferrer')
+  const handleCardActionMeeting = (metadata: Meeting) => {
+    window.open(metadata.meeting.url, '_blank', 'noopener,noreferrer')
   }
 
   const handleClickNewChip = () => {
@@ -171,7 +170,7 @@ const Message = (props: Props): JSX.Element => {
                 size='small'
                 color='primary'
                 onClick={() => {
-                  handleCardActionMeeting(message.metadata.meeting)
+                  handleCardActionMeeting(message.metadata as Meeting)
                 }}
               >
                 JOIN

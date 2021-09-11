@@ -239,9 +239,8 @@ function ResponsiveDrawer(props: Props): JSX.Element {
     </div>
   )
 
-  const container =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    window !== undefined ? () => window().document.body : undefined
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+  const container = window !== undefined ? () => window.document.body : undefined
 
   return (
     <div className={classes.root}>

@@ -4,7 +4,13 @@ interface Message {
   from: string
   body: string
   createdAt: Date
-  metadata: any
+  metadata: Meeting | null
+}
+
+interface Meeting {
+  meeting: {
+    url: string
+  }
 }
 
 interface Reaction {

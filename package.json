@@ -11,7 +11,7 @@
     "deploy": "yarn build && yarn firebase deploy",
     "clean": "git clean -dfx && rm -f yarn.lock",
     "format": "prettier --write src/ test/",
-    "lint": "eslint --fix src/",
+    "lint": "eslint --fix src/ test/",
     "fix": "yarn run format && yarn run lint"
   },
   "dependencies": {

@@ -87,7 +87,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface Props {
-  window: Window
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  window: any
 }
 
 function ResponsiveDrawer(props: Props): JSX.Element {
@@ -238,6 +239,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
     </div>
   )
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
   const container = window !== undefined ? () => window.document.body : undefined
 
   return (

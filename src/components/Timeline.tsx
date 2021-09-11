@@ -26,7 +26,7 @@ const Timeline = (props: Props): JSX.Element => {
         owner: data.owner,
         from: data.from,
         body: data.body,
-        createdAt: data['createdAt'] ? new Date(data.createdAt.seconds * 1000) : new Date(),
+        createdAt: data['createdAt'] != null ? (data['createdAt'] as Date) : new Date(),
         metadata: data['metadata'] ? data.metadata : {},
       })
     })

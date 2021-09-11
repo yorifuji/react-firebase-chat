@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import Message from './Message'
 import { Box } from '@material-ui/core'
 import { firebaseApp } from '../firebaseConfig'
-import { collectionGroup, getFirestore, orderBy, QuerySnapshot } from 'firebase/firestore'
+import { collectionGroup, getFirestore, orderBy, QuerySnapshot, Timestamp } from 'firebase/firestore'
 import { collection, query, onSnapshot } from 'firebase/firestore'
 const db = getFirestore(firebaseApp)
 
@@ -20,14 +20,13 @@ const Timeline = (props: Props): JSX.Element => {
     const timeline: Message[] = []
     snapshot.forEach((doc) => {
       const data = doc.data()
-      console.log(data)
       timeline.push({
         id: doc.id,
         owner: data.owner,
         from: data.from,
         body: data.body,
-        createdAt: data['createdAt'] != null ? (data['createdAt'] as Date) : new Date(),
-        metadata: data['metadata'] ? data.metadata : {},
+        createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate() : new Date(),
+        metadata: data.metadata ? data.metadata : {},
       })
     })
     setTimeline(timeline)

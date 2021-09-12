@@ -51,7 +51,7 @@ const AddChannel = (): JSX.Element => {
       name: name,
       createdAt: serverTimestamp(),
     }
-    await setDoc(newChannelRef, newChannel)
+    await setDoc(newChannelRef, newChannel).catch(console.log)
 
     setInputValue('')
     setOpen(true)

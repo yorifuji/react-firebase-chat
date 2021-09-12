@@ -9,6 +9,7 @@
     "test:rules": "yarn firebase emulators:exec --only firestore \"yarn jest\"",
     "eject": "react-scripts eject",
     "deploy": "yarn build && yarn firebase deploy",
+    "deploy:rules": "yarn firebase deploy --only firestore:rules",
     "clean": "git clean -dfx && rm -f yarn.lock",
     "format": "prettier --write src/ test/",
     "lint": "eslint --fix src/ test/",

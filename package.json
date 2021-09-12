@@ -6,14 +6,14 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:rules": "yarn firebase emulators:exec --only firestore \"yarn jest\"",
+    "test:rules": "firebase emulators:exec --only firestore \"yarn jest\"",
     "eject": "react-scripts eject",
-    "deploy": "yarn build && yarn firebase deploy",
-    "deploy:rules": "yarn firebase deploy --only firestore:rules",
+    "deploy": "firebase deploy",
+    "deploy:rules": "firebase deploy --only firestore:rules",
     "clean": "git clean -dfx && rm -f yarn.lock",
     "format": "prettier --write src/ test/",
     "lint": "eslint --fix src/ test/",
-    "fix": "yarn run format && yarn run lint"
+    "fix": "yarn format && yarn lint"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",

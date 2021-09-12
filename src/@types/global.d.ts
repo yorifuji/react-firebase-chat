@@ -31,7 +31,7 @@ interface Channel {
   channelID: string
   owner: string
   name: string
-  createdAt: number
+  createdAt: date
 }
 
 type firestoreChannel = {

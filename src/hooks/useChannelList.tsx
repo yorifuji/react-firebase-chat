@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import useIsOnline from './useIsOnline'
 
 import { firebaseApp } from '../firebaseConfig'
-import { getFirestore, orderBy } from 'firebase/firestore'
+import { getFirestore, orderBy, Timestamp } from 'firebase/firestore'
 import { collection, query, onSnapshot } from 'firebase/firestore'
 const db = getFirestore(firebaseApp)
 
@@ -16,11 +16,12 @@ function useChannelList(): Channel[] {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const channelListTmp: Array<Channel> = []
         querySnapshot.forEach((doc) => {
+          const data: firestoreChannel = doc.data() as firestoreChannel
           const channel: Channel = {
-            channelID: doc.data().channelID,
-            owner: doc.data().owner,
-            name: doc.data().name,
-            createdAt: doc.data().createdAt,
+            channelID: data.channelID,
+            owner: data.owner,
+            name: data.name,
+            createdAt: data.createdAt ? (data.createdAt as Timestamp).toDate() : new Date(),
           }
           channelListTmp.push(channel)
         })

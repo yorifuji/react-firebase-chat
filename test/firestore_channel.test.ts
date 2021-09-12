@@ -24,13 +24,14 @@ beforeEach(async () => {
 describe('作成', () => {
   test('成功', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
-    await testing.assertSucceeds(
-      firestore.collection('channels').add({
-        owner: 'alice',
-        name: 'channel',
-        createdAt: serverTimestamp(),
-      })
-    )
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      channelID: doc.id,
+      owner: 'alice',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+    }
+    await testing.assertSucceeds(doc.set(data))
   })
 
   test('失敗（未認証）', async () => {

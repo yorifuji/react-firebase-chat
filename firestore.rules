@@ -6,9 +6,10 @@ service cloud.firestore {
     // channel
     match /channels/{channel} {
       allow create: if request.auth.uid != null &&
+                    incomingData().channelID = request.resource.id &&
                     incomingData().owner == request.auth.uid &&
-                    incomingData().keys().size() == 3 &&
-                    incomingData().keys().hasAll(["owner", "name", "createdAt"]);
+                    incomingData().keys().size() == 4 &&
+                    incomingData().keys().hasAll(["channelID", "owner", "name", "createdAt"]);
 
       match /posts/{post} {
         allow create: if request.auth.uid != null &&

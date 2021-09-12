@@ -45,7 +45,7 @@ const AddChannel = (): JSX.Element => {
     if (user == null) return
 
     const newChannelRef = doc(collection(db, 'channels'))
-    const newChannel = {
+    const newChannel: firestoreChannel = {
       channelID: newChannelRef.id,
       owner: user.uid,
       name: name,

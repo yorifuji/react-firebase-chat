@@ -33,3 +33,10 @@ interface Channel {
   name: string
   createdAt: number
 }
+
+type firestoreChannel = {
+  channelID: string
+  owner: string
+  name: string
+  createdAt: FieldValue
+}

@@ -17,7 +17,7 @@ function useChannelList(): Channel[] {
         const channelListTmp: Array<Channel> = []
         querySnapshot.forEach((doc) => {
           const channel: Channel = {
-            id: doc.id,
+            channelID: doc.data().channelID,
             owner: doc.data().owner,
             name: doc.data().name,
             createdAt: doc.data().createdAt,

@@ -155,7 +155,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
       // console.log(channelID)
       // console.log(user && user.uid)
       // console.log(channelList)
-      const channel = channelList.filter((channel: Channel) => channel.id === channelID && channel.owner === user?.uid)
+      const channel = channelList.filter((channel: Channel) => channel.channelID === channelID && channel.owner === user?.uid)
       // console.log(channel)
       if (channel.length > 0) return true
     }
@@ -188,7 +188,7 @@ function ResponsiveDrawer(props: Props): JSX.Element {
   const getChannelTitle = () => {
     let title = 'Channel'
     channelList.forEach((channel: Channel) => {
-      if (channel.id === currentChannel) title = `#${channel.name}`
+      if (channel.channelID === currentChannel) title = `#${channel.name}`
     })
     return title
   }
@@ -218,11 +218,11 @@ function ResponsiveDrawer(props: Props): JSX.Element {
         {channelList.map((channel: Channel) => (
           <ListItem
             button
-            key={channel.id}
+            key={channel.channelID}
             className={classes.nested}
             component={Link}
-            to={`/channel/${channel.id}`}
-            selected={isCurrentPath(`/channel/${channel.id}`)}
+            to={`/channel/${channel.channelID}`}
+            selected={isCurrentPath(`/channel/${channel.channelID}`)}
           >
             <ListItemText primary={`# ${channel.name}`} />
           </ListItem>

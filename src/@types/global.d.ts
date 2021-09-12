@@ -28,7 +28,7 @@ interface ReactionUI {
 }
 
 interface Channel {
-  id: string
+  channelID: string
   owner: string
   name: string
   createdAt: number

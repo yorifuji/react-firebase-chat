@@ -8,7 +8,7 @@ import MuiAlert from '@material-ui/lab/Alert'
 import useCurrentUser from '../hooks/useCurrentUser'
 
 import { firebaseApp } from '../firebaseConfig'
-import { getFirestore, addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, collection, serverTimestamp, doc, setDoc } from 'firebase/firestore'
 const db = getFirestore(firebaseApp)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,15 +40,18 @@ const AddChannel = (): JSX.Element => {
     }
   }
 
-  const addChannel = async (channel: string) => {
-    if (channel.length === 0) return
+  const addChannel = async (name: string) => {
+    if (name.length === 0) return
+    if (user == null) return
 
+    const newChannelRef = doc(collection(db, 'channels'))
     const newChannel = {
-      owner: user?.uid,
-      name: channel,
+      channelID: newChannelRef.id,
+      owner: user.uid,
+      name: name,
       createdAt: serverTimestamp(),
     }
-    await addDoc(collection(db, 'channels'), newChannel)
+    await setDoc(newChannelRef, newChannel)
 
     setInputValue('')
     setOpen(true)

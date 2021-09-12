@@ -31,12 +31,14 @@ describe('this is test', () => {
     // storage = ctx.storage()
 
     // test
-    const ref = firestore.collection('channels').add({
+    const ref = firestore.collection('channels').doc()
+    const data = {
+      channelID: ref.id,
       owner: 'user_123',
       name: 'channel-123',
       createdAt: serverTimestamp(),
-    })
-    await assertSucceeds(ref)
+    }
+    await assertSucceeds(ref.set(data))
   })
 
   test('fail test', async () => {
@@ -47,11 +49,13 @@ describe('this is test', () => {
     const firestore = ctx.firestore()
 
     // test
-    const ref = firestore.collection('channels').add({
+    const ref = firestore.collection('channels').doc()
+    const data = {
+      channelID: 'xxxxxxxxxxxxxxx', // channelID must equal as doc.id.
       owner: 'user_123',
       name: 'channel-123',
       createdAt: serverTimestamp(),
-    })
-    await assertFails(ref)
+    }
+    await assertFails(ref.set(data))
   })
 })

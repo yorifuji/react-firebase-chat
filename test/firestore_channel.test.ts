@@ -21,7 +21,7 @@ beforeEach(async () => {
   await testEnv.clearFirestore()
 })
 
-describe('作成', () => {
+describe('チャンネルの作成', () => {
   test('成功', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
     const doc = firestore.collection('channels').doc()
@@ -36,53 +36,70 @@ describe('作成', () => {
 
   test('失敗（未認証）', async () => {
     const firestore = testEnv.unauthenticatedContext().firestore()
-    await testing.assertFails(
-      firestore.collection('channels').add({
-        owner: 'alice',
-        name: 'channel',
-        createdAt: serverTimestamp(),
-      })
-    )
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      channelID: doc.id,
+      owner: 'alice',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+    }
+    await testing.assertFails(doc.set(data))
   })
 
   test('失敗（owner != request.auth.uid）', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
-    await testing.assertFails(
-      firestore.collection('channels').add({
-        owner: 'bob',
-        name: 'channel',
-        createdAt: serverTimestamp(),
-      })
-    )
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      channelID: doc.id,
+      owner: 'bob',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+    }
+    await testing.assertFails(doc.set(data))
+  })
+
+  test('失敗（channelID）', async () => {
+    const firestore = testEnv.authenticatedContext('alice').firestore()
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      channelID: 'foo',
+      owner: 'alice',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+    }
+    await testing.assertFails(doc.set(data))
   })
 
   test('失敗（パラメータ不足）', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
-    await testing.assertFails(
-      firestore.collection('channels').add({
-        owner: 'alice',
-        createdAt: serverTimestamp(),
-      })
-    )
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      owner: 'alice',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+    }
+    await testing.assertFails(doc.set(data))
   })
 
   test('失敗（スキーマエラー）', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
-    await testing.assertFails(
-      firestore.collection('channels').add({
-        owner: 'alice',
-        name: 'channel',
-        createdAt: serverTimestamp(),
-        foo: 1,
-      })
-    )
+    const doc = firestore.collection('channels').doc()
+    const data = {
+      channelID: doc.id,
+      owner: 'alice',
+      name: 'channel',
+      createdAt: serverTimestamp(),
+      foo: 0,
+    }
+    await testing.assertFails(doc.set(data))
   })
 })
 
-describe('更新', () => {
+describe('チャンネルの更新', () => {
   beforeEach(async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
     await firestore.doc('channels/channel1').set({
+      channelID: 'channel1',
       owner: 'alice',
       name: 'channel',
       createdAt: serverTimestamp(),
@@ -130,6 +147,17 @@ describe('更新', () => {
     )
   })
 
+  test('失敗（channelIDの変更）', async () => {
+    const firestore = testEnv.unauthenticatedContext().firestore()
+    await testing.assertFails(
+      firestore.doc('channels/channel1').update({
+        channelID: 'channel2',
+        name: 'channel2',
+        updatedAt: serverTimestamp(),
+      })
+    )
+  })
+
   test('失敗（パラメータ不足）', async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
     await testing.assertFails(
@@ -162,10 +190,11 @@ describe('更新', () => {
   })
 })
 
-describe('削除', () => {
+describe('チャンネルの削除', () => {
   beforeEach(async () => {
     const firestore = testEnv.authenticatedContext('alice').firestore()
     await firestore.doc('channels/channel1').set({
+      channelID: 'channel1',
       owner: 'alice',
       name: 'channel',
       createdAt: serverTimestamp(),
